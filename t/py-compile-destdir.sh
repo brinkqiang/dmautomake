@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test the '--destdir' option of the 'py-compile' script,
 
@@ -34,11 +34,13 @@ echo 'def bar (): return "bar"' > $destdir/sub/bar.py
 
 find $destdir # For debugging.
 st=0
-for b in foo sub/bar; do
-  f=$(pyc_location -p "$destdir/$b.pyc")
-  test -f "$f"
-  strings "$f" || : # For debugging.
-  $FGREP $destdir $f && { echo BAD: $f; st=1; }
+for x in c o; do
+  for b in foo sub/bar; do
+    f=$(pyc_location -p "$destdir/$b.py$x")
+    test -f "$f"
+    strings "$f" || : # For debugging.
+    $FGREP $destdir $f && { echo BAD: $f; st=1; }
+  done
 done
 exit $st
 

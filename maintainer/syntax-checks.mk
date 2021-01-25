@@ -1,6 +1,6 @@
 # Maintainer checks for Automake.  Requires GNU make.
 
-# Copyright (C) 2012-2020 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # We also have to take into account VPATH builds (where some generated
 # tests might be in '$(builddir)' rather than in '$(srcdir)'), TAP-based
@@ -36,10 +36,9 @@ xdefs = \
   $(srcdir)/t/ax/test-lib.sh \
   $(srcdir)/t/ax/test-defs.in
 
-# Must prune test dirs since some are intentionally unreadable.
 ams := $(shell find $(srcdir) -name '*.dir' -prune -o -name '*.am' -print)
 
-# Some simple checks, and then ordinary checks.  These are only really
+# Some simple checks, and then ordinary check.  These are only really
 # guaranteed to work on my machine.
 syntax_check_rules = \
 $(sc_tests_plain_check_rules) \
@@ -52,7 +51,6 @@ sc_mkinstalldirs \
 sc_pre_normal_post_install_uninstall \
 sc_perl_no_undef \
 sc_perl_no_split_regex_space \
-sc_perl_protos \
 sc_cd_in_backquotes \
 sc_cd_relative_dir \
 sc_perl_at_uscore_in_scalar_context \
@@ -81,8 +79,8 @@ sc_tabs_in_texi \
 sc_at_in_texi
 
 $(syntax_check_rules): bin/automake bin/aclocal
-maintainer-check syntax-check: $(syntax_check_rules)
-.PHONY: maintainer-check syntax-check $(syntax_check_rules)
+maintainer-check: $(syntax_check_rules)
+.PHONY: maintainer-check $(syntax_check_rules)
 
 # Check that the list of tests given in the Makefile is equal to the
 # list of all test scripts in the Automake testsuite.
@@ -96,8 +94,7 @@ lint: maintainer-check
 sc_sanity_gnu_grep:
 	$(AM_V_GEN)grep --version | grep 'GNU grep' >/dev/null 2>&1 \
 	  && ab=$$(printf 'a\nb') \
-	  && test "$$(printf 'xa\nb\nc' | grep -Pzo 'a\nb' | tr -d '\0')" \
-	       = "$$ab" \
+	  && test "$$(printf 'xa\nb\nc' | grep -Pzo 'a\nb')" = "$$ab" \
 	  || { \
 	    echo "Syntax checks recipes require a modern GNU grep" >&2; \
 	    exit 1; \
@@ -105,19 +102,12 @@ sc_sanity_gnu_grep:
 .PHONY: sc_sanity_gnu_grep
 $(syntax_check_rules): sc_sanity_gnu_grep
 
-# Check that every subroutine in perl scripts has a corresponding
-# prototype.
-sc_perl_protos:
-	$(AM_V_GEN)$(srcdir)/maintainer/check-perl-protos \
-	  <$(srcdir)/bin/aclocal.in && \
-	$(srcdir)/maintainer/check-perl-protos <$(srcdir)/bin/automake.in
-
 # These check avoids accidental configure substitutions in the source.
-# There are exactly 7 lines that should be modified from automake.in to
-# automake, and 8 lines that should be modified from aclocal.in to
+# There are exactly 8 lines that should be modified from automake.in to
+# automake, and 9 lines that should be modified from aclocal.in to
 # aclocal.
-automake_diff_no = 7
-aclocal_diff_no = 8
+automake_diff_no = 8
+aclocal_diff_no = 9
 sc_diff_automake sc_diff_aclocal: in=$($*_in)
 sc_diff_automake sc_diff_aclocal: out=$($*_script)
 sc_diff_automake sc_diff_aclocal: sc_diff_% :
@@ -490,11 +480,9 @@ sc_tests_logs_duplicate_prefixes: sc_ensure_testsuite_has_run
 	fi
 
 # Ensure variables are listed before rules in Makefile.in files we generate.
-# (Do not descend into test dirs that are unreadable.)
 sc_tests_makefile_variable_order: sc_ensure_testsuite_has_run
 	@st=0; \
-	for file in `find t ! -perm -o+r -prune -o -name Makefile.in -print`; \
-	do \
+	for file in `find t -name Makefile.in -print`; do \
 	  latevars=`sed -n \
 	    -e :x -e 's/#.*//' \
 	    -e '/\\\\$$/{' -e N -e 'b x' -e '}' \

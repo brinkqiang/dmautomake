@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2020 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Make sure 'check:' honors $(BUILT_SOURCES).
 # PR/359.
@@ -44,7 +44,7 @@ BUILT_SOURCES = command2.inc
 check_SCRIPTS = echo.sh
 echo.sh:
 ## The next line ensures that command1.inc has been built before
-## recursing into the subdir.
+## recurring into the subdir.
 	test -f ../command1.inc
 	(echo '#! /bin/sh'; cat command2.inc) > $@
 	chmod +x $@

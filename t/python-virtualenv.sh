@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check that python support can work well with virtualenvs.
 # This test also works as a mild stress-test on the python support.
@@ -39,8 +39,7 @@ fi
 py_version_post=$(python -V)
 
 # Sanity check.
-test "$py_version_pre" = "$py_version_post" \
-  || skip_ "virtualenv $py_version_post != $py_version_pre"
+test "$py_version_pre" = "$py_version_post"
 
 cwd=$(pwd) || fatal_ "getting current working directory"
 py_version=$(python -c 'import sys; print("%u.%u" % tuple(sys.version_info[:2]))')
@@ -125,8 +124,10 @@ check_install ()
 
   test -f      "$py_site"/am_foo.py
   py_installed "$py_site"/am_foo.pyc
+  py_installed "$py_site"/am_foo.pyo
   py_installed "$py_site"/am_virtenv/__init__.py
   py_installed "$py_site"/am_virtenv/__init__.pyc
+  py_installed "$py_site"/am_virtenv/__init__.pyo
   test -f      "$py_site"/libquux.a
   test -f      "$py_site"/am_virtenv/libzardoz.a
 }
@@ -137,8 +138,10 @@ check_uninstall ()
 
   test ! -e          "$py_site"/am_foo.py
   py_installed --not "$py_site"/am_foo.pyc
+  py_installed --not "$py_site"/am_foo.pyo
   test ! -e          "$py_site"/am_virtenv/__init__.py
   py_installed --not "$py_site"/am_virtenv/__init__.pyc
+  py_installed --not "$py_site"/am_virtenv/__init__.pyo
   test ! -e          "$py_site"/libquux.a
   test ! -e          "$py_site"/am_virtenv/libzardoz.a
 }

@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,24 +11,25 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package Automake::General;
 
 use 5.006;
 use strict;
-use warnings FATAL => 'all';
-
 use Exporter;
 use File::Basename;
 
-our @ISA = qw (Exporter);
-our @EXPORT = qw (&uniq &none $me);
+use vars qw (@ISA @EXPORT);
+
+@ISA = qw (Exporter);
+@EXPORT = qw (&uniq $me);
 
 # Variable we share with the main package.  Be sure to have a single
 # copy of them: using 'my' together with multiple inclusion of this
 # package would introduce several copies.
-our $me = basename ($0);
+use vars qw ($me);
+$me = basename ($0);
 
 # END
 # ---
@@ -65,23 +66,22 @@ sub uniq (@)
    return wantarray ? @res : "@res";
 }
 
-# $RES
-# none (&PRED, @LIST)
-# ------------
-# Return 1 when no element in LIST satisfies predicate PRED otherwise 0.
-sub none (&@)
-{
-  my ($pred, @list) = @_;
-  my $res = 1;
-  foreach my $item (@list)
-    {
-      if ($pred->($item))
-        {
-          $res = 0;
-          last;
-        }
-    }
-  return $res;
-}
 
 1; # for require
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2004-2020 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Ensure DESTDIR is not included in byte-compiled files.
 
@@ -44,10 +44,11 @@ $MAKE install DESTDIR=$destdir
 
 # Perfunctory test that the files were created.
 test -f "$destdir/usr/share/my/my.py"
+pyo=$(pyc_location -p "$destdir/usr/share/my/my.pyo")
 pyc=$(pyc_location -p "$destdir/usr/share/my/my.pyc")
 
 # If DESTDIR has made it into the byte compiled files, fail the test.
-st=0; $FGREP "$destdir" "$pyc" || st=$?
+st=0; $FGREP "$destdir" "$pyc" "$pyo" || st=$?
 test $st -eq 1
 
 :

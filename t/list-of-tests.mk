@@ -2,7 +2,7 @@
 ## testsuite.  This fragment is meant to be included by the Makefile.am,
 ## but also to be executed directly by make when bootstrapping automake.
 
-## Copyright (C) 2011-2020 Free Software Foundation, Inc.
+## Copyright (C) 2011-2014 Free Software Foundation, Inc.
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # FIXME: this "expected failures" are in truth an hack used to
 # FIXME: to verify that some incorrect usages of our perl libraries
@@ -30,6 +30,7 @@ t/pm/Version3.pl
 
 XFAIL_TESTS = \
 t/all.sh \
+t/auxdir-pr19311.sh \
 t/cond17.sh \
 t/gcj6.sh \
 t/override-conditional-2.sh \
@@ -40,6 +41,8 @@ t/java-nobase.sh \
 t/objext-pr10128.sh \
 t/remake-timing-bug-pr8365.sh \
 t/lex-subobj-nodep.sh \
+t/subobj-indir-pr13928.sh \
+t/subobj-vpath-pr13928.sh \
 t/remake-am-pr10111.sh \
 t/remake-m4-pr10111.sh \
 $(perl_fake_XFAIL_TESTS)
@@ -53,7 +56,6 @@ t/pm/DisjCon2.pl \
 t/pm/DisjCon3.pl \
 t/pm/DisjConditions.pl \
 t/pm/DisjConditions-t.pl \
-t/pm/General.pl \
 t/pm/Version.pl \
 t/pm/Version2.pl \
 t/pm/Version3.pl \
@@ -202,7 +204,6 @@ t/built-sources-check.sh \
 t/built-sources-cond.sh \
 t/built-sources-fork-bomb.sh \
 t/built-sources-install.sh \
-t/built-sources-install-exec.sh \
 t/built-sources-subdir.sh \
 t/built-sources.sh \
 t/candist.sh \
@@ -272,7 +273,6 @@ t/compile3.sh \
 t/compile4.sh \
 t/compile5.sh \
 t/compile6.sh \
-t/compile7.sh \
 t/compile_f90_c_cxx.sh \
 t/compile_f_c_cxx.sh \
 t/cond-basic.sh \
@@ -391,7 +391,6 @@ t/depend3.sh \
 t/depend4.sh \
 t/depend5.sh \
 t/depend6.sh \
-t/depend-postproc.sh \
 t/deprecated-acinit.sh \
 t/destdir.sh \
 t/dir-named-obj-is-bad.sh \
@@ -410,7 +409,6 @@ t/dist-missing-m4.sh \
 t/dist-readonly.sh \
 t/dist-repeated.sh \
 t/dist-pr109765.sh \
-t/dist-vs-built-sources.sh \
 t/distcleancheck.sh \
 t/distcom2.sh \
 t/distcom3.sh \
@@ -431,7 +429,6 @@ t/distcheck-writable-srcdir.sh \
 t/distcheck-missing-m4.sh \
 t/distcheck-outdated-m4.sh \
 t/distcheck-no-prefix-or-srcdir-override.sh \
-t/distcheck-override-dvi.sh \
 t/distcheck-override-infodir.sh \
 t/distcheck-pr9579.sh \
 t/distcheck-pr10470.sh \
@@ -530,7 +527,6 @@ t/installdir.sh \
 t/add-missing-install-sh.sh \
 t/install-sh-unittests.sh \
 t/install-sh-option-C.sh \
-t/install-sh-option-S.sh \
 t/instdat.sh \
 t/instdat2.sh \
 t/instdir.sh \
@@ -606,7 +602,6 @@ t/lflags.sh \
 t/lflags-cxx.sh \
 t/libexec.sh \
 t/libobj-basic.sh \
-t/libobj-no-dependency-tracking.sh \
 t/libobj2.sh \
 t/libobj3.sh \
 t/libobj4.sh \
@@ -659,7 +654,6 @@ t/lisp5.sh \
 t/lisp6.sh \
 t/lisp7.sh \
 t/lisp8.sh \
-t/lisp-readonly-srcdir.sh \
 t/lisp-loadpath.sh \
 t/lisp-subdir.sh \
 t/lisp-subdir2.sh \
@@ -818,7 +812,6 @@ t/tests-environment-backcompat.sh \
 t/testsuite-summary-color.sh \
 t/testsuite-summary-count.sh \
 t/testsuite-summary-count-many.sh \
-t/testsuite-summary-header.sh \
 t/testsuite-summary-reference-log.sh \
 t/test-driver-acsubst.sh \
 t/test-driver-cond.sh \
@@ -833,7 +826,6 @@ t/test-driver-strip-vpath.sh \
 t/test-driver-trs-suffix-registered.sh \
 t/test-driver-fail.sh \
 t/test-driver-is-distributed.sh \
-t/test-extensions-empty.sh \
 t/test-harness-vpath-rewrite.sh \
 t/test-log.sh \
 t/test-logs-repeated.sh \
@@ -874,6 +866,7 @@ t/posixsubst-programs.sh \
 t/posixsubst-scripts.sh \
 t/posixsubst-sources.sh \
 t/posixsubst-tests.sh \
+t/postproc.sh \
 t/ppf77.sh \
 t/pr2.sh \
 t/pr9.sh \
@@ -1070,9 +1063,7 @@ t/subobjname.sh \
 t/subobj-clean-pr10697.sh \
 t/subobj-clean-lt-pr10697.sh \
 t/subobj-indir-pr13928.sh \
-t/subobj-objname-clash.sh \
 t/subobj-vpath-pr13928.sh \
-t/subobj-pr13928-more-langs.sh \
 t/subpkg.sh \
 t/subpkg2.sh \
 t/subpkg3.sh \
@@ -1192,7 +1183,6 @@ t/tap-summary-color.sh \
 t/tags.sh \
 t/tags2.sh \
 t/tagsub.sh \
-t/tags-lisp-space.sh \
 t/tags-pr12372.sh \
 t/tar-ustar.sh \
 t/tar-pax.sh \
@@ -1219,7 +1209,6 @@ t/txinfo-no-clutter.sh \
 t/txinfo-no-extra-dist.sh \
 t/txinfo-no-installinfo.sh \
 t/txinfo-no-repeated-targets.sh \
-t/txinfo-no-setfilename.sh \
 t/txinfo-other-suffixes.sh \
 t/txinfo-override-infodeps.sh \
 t/txinfo-override-texinfo-tex.sh \
@@ -1252,8 +1241,6 @@ t/vala-configure.sh \
 t/vala-grepping.sh \
 t/vala-headers.sh \
 t/vala-libs.sh \
-t/vala-libs-distcheck.sh \
-t/vala-libs-vpath.sh \
 t/vala-mix.sh \
 t/vala-mix2.sh \
 t/vala-non-recursive-setup.sh \

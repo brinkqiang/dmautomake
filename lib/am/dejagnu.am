@@ -1,5 +1,5 @@
 ## automake - create Makefile.in from Makefile.am
-## Copyright (C) 1994-2020 Free Software Foundation, Inc.
+## Copyright (C) 1994-2014 Free Software Foundation, Inc.
 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 ## GNU General Public License for more details.
 
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Name of tool to use.  Default is the same as the package.
 DEJATOOL = $(PACKAGE)
@@ -33,7 +33,7 @@ check-DEJAGNU: site.exp
 ## pointless to cause a failure if the tests cannot be run at all.
 	if $(SHELL) -c "$(RUNTEST) --version" > /dev/null 2>&1; then \
 	  exit_status=0; l='$(DEJATOOL)'; for tool in $$l; do \
-	    if $(RUNTEST) $(RUNTESTDEFAULTFLAGS) $(AM_RUNTESTFLAGS) $(RUNTESTFLAGS); \
+	    if $(RUNTEST) $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $(RUNTESTFLAGS); \
 	    then :; else exit_status=1; fi; \
 	  done; \
 	else echo "WARNING: could not find '$(RUNTEST)'" 1>&2; :;\
@@ -54,7 +54,7 @@ site.exp: Makefile $(EXTRA_DEJAGNU_SITE_CONFIG)
 	@echo '# Do not edit here.  If you wish to override these values' >>site.tmp
 	@echo '# edit the last section' >>site.tmp
 	@echo 'set srcdir "$(srcdir)"' >>site.tmp
-	@echo "set objdir \"`pwd`\"" >>site.tmp
+	@echo "set objdir `pwd`" >>site.tmp
 ## Quote the *_alias variables because they might be empty.
 ?BUILD?	@echo 'set build_alias "$(build_alias)"' >>site.tmp
 ?BUILD?	@echo 'set build_triplet $(build_triplet)' >>site.tmp

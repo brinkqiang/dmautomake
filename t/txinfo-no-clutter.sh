@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012-2020 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # The info, html, pdf, ps and dvi targets shouldn't let clutter in the
 # build directory.  Related to automake bug#11146.
@@ -29,10 +29,6 @@ cat > Makefile.am << 'END'
 all-local: ps pdf dvi html # For "make distcheck".
 info_TEXINFOS = foo.texi doc/bar.texi baz.texi
 SUBDIRS = sub
-
-# Tell GNU make not to parallelize these, because they
-# have overlap between explicit and intermediate .dvi files.
-.NOTPARALLEL:
 END
 
 mkdir sub doc
@@ -69,6 +65,7 @@ cat > baz.texi << 'END'
 @defindex au
 @defindex sa
 @defindex sb
+@synindex sa sb
 @node Top
 Hello walls.
 @cindex foo

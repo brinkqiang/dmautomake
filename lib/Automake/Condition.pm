@@ -1,4 +1,4 @@
-# Copyright (C) 1997-2020 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,19 +11,18 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package Automake::Condition;
 
 use 5.006;
 use strict;
-use warnings FATAL => 'all';
-
 use Carp;
-use Exporter;
 
-our @ISA = qw (Exporter);
-our @EXPORT_OK = qw (TRUE FALSE reduce_and reduce_or);
+require Exporter;
+use vars '@ISA', '@EXPORT_OK';
+@ISA = qw/Exporter/;
+@EXPORT_OK = qw/TRUE FALSE reduce_and reduce_or/;
 
 =head1 NAME
 
@@ -168,7 +167,7 @@ both create the C<"FALSE"> condition).
 # Keys in this hash are conditional strings. Values are the
 # associated object conditions.  This is used by 'new' to reuse
 # Condition objects with identical conditionals.
-our %_condition_singletons;
+use vars '%_condition_singletons';
 # Do NOT reset this hash here.  It's already empty by default,
 # and any setting would otherwise occur AFTER the 'TRUE' and 'FALSE'
 # constants definitions.
@@ -639,3 +638,20 @@ Akim Demaille <akim@epita.fr>, and  Alexandre Duret-Lutz <adl@gnu.org>.
 =cut
 
 1;
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

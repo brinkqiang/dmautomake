@@ -62,203 +62,6 @@
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-New in ?.?.?:
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-New in 1.16.3:
-
-* New features added
-
-  - In the testsuite summary, the "for $(PACKAGE_STRING)" suffix
-    can be overridden with the AM_TESTSUITE_SUMMARY_HEADER variable.
-
-* Bugs fixed
-
-  - Python 3.10 version number no longer considered to be 3.1.
-
-  - Broken links in manual fixed or removed, and new script
-    contrib/checklinkx (a small modification of W3C checklink) added,
-    with accompany target checklinkx to recheck urls.
-
-  - install-exec target depends on $(BUILT_SOURCES).
-
-  - valac argument matching more precise, to avoid garbage in DIST_COMMON.
-
-  - Support for Vala in VPATH builds fixed so that both freshly-generated and
-    distributed C files work, and operation is more reliable with or without
-    an installed valac.
-
-  - Dejagnu doesn't break on directories containing spaces.
-
-* Distribution
-
-  - new variable AM_DISTCHECK_DVI_TARGET, to allow overriding the
-    "make dvi" that is done as part of distcheck.
-
-* Miscellaneous changes
-
-  - install-sh tweaks:
-    . new option -p to preserve mtime, i.e., invoke cp -p.
-    . new option -S SUFFIX to attempt backup files using SUFFIX.
-    . no longer unconditionally uses -f when rm is overridden by RMPROG.
-    . does not chown existing directories.
-
-  - Removed function up_to_date_p in lib/Automake/FileUtils.pm.
-    We believe this function is completely unused.
-
-  - Support for in-tree Vala libraries improved.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-New in 1.16.2:
-
-* New features added
-
-  - add zstd support and the automake option, dist-zstd.
-
-  - support for Python 3: py-compile now supports both Python 3
-    and Python 2; tests do not require .pyo files, and uninstall
-    deletes __pycache__ correctly (automake bug #32088).
-
-* Miscellaneous changes
-
-  - automake no longer requires a @setfilename in each .texi file
-
-* Bugs fixed
-
-  - When cleaning the compiled python files, '\n' is not used anymore in the
-    substitution text of 'sed' transformations.  This is done to preserve
-    compatibility with the 'sed' implementation provided by macOS which
-    considers '\n' as the 'n' character instead of a newline.
-    (automake bug#31222)
-
-  - For make tags, lisp_LISP is followed by the necessary space when
-    used with CONFIG_HEADERS.
-    (automake bug#38139)
-
-  - The automake test txinfo-vtexi4.sh no longer fails when localtime
-    and UTC cross a day boundary.
-
-  - Emacsen older than version 25, which require use of
-    byte-compile-dest-file, are supported again.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-New in 1.16.1:
-
-* Bugs fixed:
-
-  - 'install-sh' now ensures that nobody can cross privilege boundaries by
-    pre-creating symlink on the directory inside "/tmp".
-
-  - 'automake' does not depend on the 'none' subroutine of the List::Util
-    module anymore to support older Perl version. (automake bug#30631)
-
-  - A regression in AM_PYTHON_PATH causing the rejection of non literal
-    minimum version parameter hasn't been fixed. (automake bug#30616)
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-New in 1.16:
-
-* Miscellaneous changes
-
-  - When subdir-objects is in effect, Automake will now construct
-    shorter object file names when no programs and libraries name
-    clashes are encountered.  This should make the discouraged use of
-    'foo_SHORTNAME' unnecessary in many cases.
-
-* Bugs fixed:
-
-  - Automatic dependency tracking has been fixed to work also when the
-    'subdir-object' option is used and some 'foo_SOURCES' definition
-    contains unexpanded references to make variables, as in, e.g.:
-
-        a_src = sources/libs/aaa
-        b_src = sources/bbb
-        foo_SOURCES = $(a_src)/bar.c $(b_src)/baz.c
-
-    With such a setup, the created makefile fragment containing dependency
-    tracking information will be correctly placed under the directories
-    named 'sources/libs/aaa/.deps' and 'sources/bbb/.deps', rather than
-    mistakenly under directories named (literally!) '$(src_a)/.deps' and
-    '$(src_b)/.deps' (this was the first part of automake bug#13928).
-
-    Notice that in order to fix this bug we had to slightly change the
-    semantics of how config.status bootstraps the makefile fragments
-    required for the dependency tracking to work: rather than attempting
-    to parse the Makefiles via grep and sed trickeries only, we actually
-    invoke 'make' on a slightly preprocessed version of those Makefiles,
-    using a private target that is only meant to bootstrap the required
-    makefile fragments.
-
-  - The 'subdir-object' option no longer causes object files corresponding
-    to source files specified with an explicit '$(srcdir)' component to be
-    placed in the source tree rather than in the build tree.
-
-    For example, if Makefile.am contains:
-
-        AUTOMAKE_OPTIONS = subdir-objects
-        foo_SOURCES = $(srcdir)/foo.c $(srcdir)/s/bar.c $(top_srcdir)/baz.c
-
-    then "make all" will create 'foo.o' and 's/bar.o' in $(builddir) rather
-    than in $(srcdir), and will create 'baz.o' in $(top_builddir) rather
-    than in $(top_srcdir).
-
-    This was the second part of automake bug#13928.
-
-  - Installed 'aclocal' m4 macros can now accept installation directories
-    containing '@' characters (automake bug#20903)
-
-  - "./configure && make dist" no longer fails when a distributed file depends
-    on one from BUILT_SOURCES.
-
-  - When combining AC_LIBOBJ or AC_FUNC_ALLOCA with the
-    "--disable-dependency-tracking" configure option in an out of source
-    build, the build sub-directory defined by AC_CONFIG_LIBOBJ_DIR is now
-    properly created.  (automake bug#27781)
-
-  - The time printed by 'mdate-sh' is now using the UTC time zone to support
-    the reproducible build effort.  (automake bug#20314)
-
-  - The elisp byte-compilation rule now uses byte-compile-dest-file-function,
-    rather than byte-compile-dest-file, which was obsoleted in 2009. We expect
-    that Emacs-26 will continue to support the old function, but will complain
-    loudly, and that Emacs-27 will remove support for it altogether.
-
-* New features added
-
-  - A custom testsuite driver for the Guile Scheme SRFI-64 API has been added
-    to the "contrib" section.  This allows a more convenient way to test Guile
-    code without having to use low primitives such as exit status.  See
-    SRFI-64 API specification for more details:
-    <https://srfi.schemers.org/srfi-64/srfi-64.html>
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-New in 1.15.1:
-
-* Bugs fixed:
-
-  - The code has been adapted to remove a warning present since Perl
-    5.22 stating that "Unescaped left brace in regex is deprecated".
-    This warning has become an hard error in Perl 5.26 (bug#22372).
-
-  - The generated Makefiles do not rely on the obsolescent GZIP
-    environment variable which was used for passing arguments to
-    'gzip'.  Compatibility with old versions has been
-    preserved. (bug#20132)
-
-* Miscellaneous changes:
-
-  - Support the Windows version of the Intel C Compiler (icl) in the
-    'compile' script in the same way the (compatible) Microsoft C
-    Compiler is supported.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 New in 1.15:
 
 * Improvements and refactorings in the install-sh script:
@@ -279,7 +82,7 @@ New in 1.15:
 
 * Automake-generated testsuites:
 
-  - The default test-driver used by the Automake-generated testsuites
+  - The default test-driver used by the Automake-generates testsuites
     now appends the result and exit status of each "plain" test to the
     associated log file (automake bug#11814).
 
@@ -401,8 +204,8 @@ New in 1.14:
     compiler is an inferior one that doesn't grasp the combined use of
     both the "-c -o" options; see discussion about automake bug#13378 for
     more details:
-    <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=13378#35>
-    <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=13378#44>
+    <http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13378#35>
+    <http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13378#44>
 
   - The next major Automake version (2.0) will unconditionally activate
     the 'subdir-objects' option.  In order to smooth out the transition,
@@ -706,7 +509,7 @@ New in 1.13:
 
   - Support for the "Cygnus-style" trees (once enabled by the 'cygnus'
     option) has been removed.  See discussion about automake bug#11034
-    for more background: <https://debbugs.gnu.org/11034>.
+    for more background: <http://debbugs.gnu.org/11034>.
 
   - The deprecated aclocal option '--acdir' has been removed.  You
     should use the options '--automake-acdir' and '--system-acdir'
@@ -1417,7 +1220,6 @@ New in 1.11.3:
     script.  Similarly, the obsolescent variable '$(AMTAR)' (which you
     shouldn't be using BTW ;-) no longer invokes the 'missing' script
     to wrap tar, but simply invokes the 'tar' program itself.
-    The TAR environment variable overrides.
 
   - "make dist" can now create lzip-compressed tarballs.
 
@@ -1678,7 +1480,7 @@ New in 1.11:
 
   - Automake development is done in a git repository on Savannah now, see
 
-      https://git.sv.gnu.org/gitweb/?p=automake.git
+      http://git.sv.gnu.org/gitweb/?p=automake.git
 
     A read-only CVS mirror is provided at
 
@@ -2836,7 +2638,7 @@ New in 1.7:
   using a `dirlist' file within the aclocal directory.
 * automake --output-dir is deprecated.
 * The part of the distcheck target that checks whether uninstall actually
-  removes all installed files has been moved to a separate target,
+  removes all installed files has been moved in a separate target,
   distuninstallcheck, so it can be overridden easily.
 * Many bug fixes.
 
@@ -2882,7 +2684,7 @@ New in 1.6:
 * EXTRA_DIST can contain generated directories.
 * Support for dot-less extensions in suffix rules.
 * The part of the distcheck target that checks whether distclean actually
-  cleans all built files has been moved to a separate target, distcleancheck,
+  cleans all built files has been moved in a separate target, distcleancheck,
   so it can be overridden easily.
 * `make distcheck' will pass additional options defined in
   $(DISTCHECK_CONFIGURE_FLAGS) to configure.
@@ -3113,7 +2915,7 @@ New in 0.20:
 
 -----
 
-Copyright (C) 1995-2020 Free Software Foundation, Inc.
+Copyright (C) 1995-2014 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -3126,4 +2928,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

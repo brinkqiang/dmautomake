@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012-2020 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check that automake warns against old-style usages of AM_INIT_AUTOMAKE
 # (i.e., calls with two or three arguments).
@@ -25,7 +25,6 @@ cat > configure.ac <<'END'
 AC_INIT([Makefile.am])
 AM_INIT_AUTOMAKE([twoargs], [1.0])
 AC_CONFIG_FILES([Makefile])
-AC_OUTPUT
 END
 
 $ACLOCAL

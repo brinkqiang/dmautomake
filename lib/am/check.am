@@ -1,5 +1,5 @@
 ## automake - create Makefile.in from Makefile.am
-## Copyright (C) 2001-2020 Free Software Foundation, Inc.
+## Copyright (C) 2001-2014 Free Software Foundation, Inc.
 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 ## GNU General Public License for more details.
 
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 am__tty_colors_dummy = \
   mgn= red= grn= lgn= blu= brg= std=; \
@@ -243,9 +243,6 @@ am--fnord $(TEST_LOGS) $(TEST_LOGS:.log=.trs): $(am__force_recheck)
 am--force-recheck:
 	@:
 
-## Exists only to be overridden.  See bug#11745.
-AM_TESTSUITE_SUMMARY_HEADER = ' for $(PACKAGE_STRING)'
-
 $(TEST_SUITE_LOG): $(TEST_LOGS)
 	@$(am__set_TESTS_bases); \
 ## Helper shell function, tells whether a path refers to an existing,
@@ -378,7 +375,7 @@ $(TEST_SUITE_LOG): $(TEST_LOGS)
 ## Multi line coloring is problematic with "less -R", so we really need
 ## to color each line individually.
 	echo "$${col}$$br$${std}"; 					\
-	echo "$${col}Testsuite summary"$(AM_TESTSUITE_SUMMARY_HEADER)"$${std}";	\
+	echo "$${col}Testsuite summary for $(PACKAGE_STRING)$${std}";	\
 	echo "$${col}$$br$${std}"; 					\
 ## This is expected to go to the console, so it might have to be colorized.
 	create_testsuite_report --maybe-color;				\
@@ -393,7 +390,7 @@ $(TEST_SUITE_LOG): $(TEST_LOGS)
 ## Be sure to exit with the proper exit status.  The use of "exit 1" below
 ## is required to work around a FreeBSD make bug (present only when running
 ## in concurrent mode).  See automake bug#9245:
-##  <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=9245>
+##  <http://debbugs.gnu.org/cgi/bugreport.cgi?bug=9245>
 ## and FreeBSD PR bin/159730:
 ##  <http://www.freebsd.org/cgi/query-pr.cgi?pr=159730>.
 	$$success || exit 1
@@ -404,7 +401,7 @@ RECHECK_LOGS = $(TEST_LOGS)
 ## Running all tests, or rechecking failures. ##
 ## ------------------------------------------ ##
 
-check-TESTS: %CHECK_DEPS%
+check-TESTS:
 	@list='$(RECHECK_LOGS)';           test -z "$$list" || rm -f $$list
 	@list='$(RECHECK_LOGS:.log=.trs)'; test -z "$$list" || rm -f $$list
 ## We always have to remove $(TEST_SUITE_LOG), to ensure its rule is run

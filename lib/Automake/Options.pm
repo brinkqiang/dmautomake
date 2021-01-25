@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2020 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,28 +11,27 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package Automake::Options;
 
 use 5.006;
 use strict;
-use warnings FATAL => 'all';
-
 use Exporter;
-
 use Automake::Config;
 use Automake::ChannelDefs;
 use Automake::Channels;
 use Automake::Version;
 
-our @ISA = qw (Exporter);
-our @EXPORT = qw (option global_option
-		  set_option set_global_option
-		  unset_option unset_global_option
-		  process_option_list process_global_option_list
-		  set_strictness $strictness $strictness_name
-		  &FOREIGN &GNU &GNITS);
+use vars qw (@ISA @EXPORT);
+
+@ISA = qw (Exporter);
+@EXPORT = qw (option global_option
+              set_option set_global_option
+              unset_option unset_global_option
+              process_option_list process_global_option_list
+              set_strictness $strictness $strictness_name
+              &FOREIGN &GNU &GNITS);
 
 =head1 NAME
 
@@ -73,14 +72,14 @@ F<Makefile.am>s.
 =cut
 
 # Values are the Automake::Location of the definition.
-our %_options;        # From AUTOMAKE_OPTIONS
-our %_global_options; # From AM_INIT_AUTOMAKE or the command line.
+use vars '%_options';        # From AUTOMAKE_OPTIONS
+use vars '%_global_options'; # From AM_INIT_AUTOMAKE or the command line.
 
 # Whether process_option_list has already been called for the current
 # Makefile.am.
-our $_options_processed;
+use vars '$_options_processed';
 # Whether process_global_option_list has already been called.
-our $_global_options_processed;
+use vars '$_global_options_processed';
 
 =head2 Constants
 
@@ -120,10 +119,10 @@ The current strictness name.  One of C<'foreign'>, C<'gnu'>, or C<'gnits'>.
 =cut
 
 # Strictness levels.
-our ($strictness, $strictness_name);
+use vars qw ($strictness $strictness_name);
 
 # Strictness level as set on command line.
-our ($_default_strictness, $_default_strictness_name);
+use vars qw ($_default_strictness $_default_strictness_name);
 
 
 =head2 Functions
@@ -278,7 +277,6 @@ sub _is_valid_easy_option ($)
     dist-lzip
     dist-xz
     dist-zip
-    dist-zstd
     info-in-builddir
     no-define
     no-dependencies
@@ -459,3 +457,20 @@ sub set_strictness ($)
 }
 
 1;
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

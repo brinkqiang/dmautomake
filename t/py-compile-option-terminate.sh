@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check that a non-option argument and the '--' special argument
 # explicitly terminate the option list for 'py-compile'.
@@ -27,12 +27,17 @@ cp "$am_scriptdir/py-compile" . \
 : > ./--foo.py
 ./py-compile -- -o.py --foo.py
 py_installed ./-o.pyc
+py_installed ./-o.pyo
 py_installed ./--foo.pyc
+py_installed ./--foo.pyo
 rm -f ./-*.py[co]
 : > x.py
 ./py-compile x.py -o.py --foo.py
 py_installed ./x.pyc
+py_installed ./x.pyo
 py_installed ./-o.pyc
+py_installed ./-o.pyo
 py_installed ./--foo.pyc
+py_installed ./--foo.pyo
 
 :

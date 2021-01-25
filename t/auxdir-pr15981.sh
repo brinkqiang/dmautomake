@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2014-2020 Free Software Foundation, Inc.
+# Copyright (C) 2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # AM_AUX_DIR_EXPAND should ensure $ac_aux_dir is properly initialized.
 # Issue revealed by related automake bug#15981.
@@ -24,7 +24,7 @@ AC_INIT([test], [0.0])
 AM_AUX_DIR_EXPAND
 printf '%s\n' "ac_aux_dir: '$ac_aux_dir'"
 printf '%s\n' "am_aux_dir: '$am_aux_dir'"
-test "${ac_aux_dir%/}" = . || AS_EXIT([1])
+test "$ac_aux_dir" = . || AS_EXIT([1])
 test "$am_aux_dir" = "`pwd`" || AS_EXIT([1])
 AS_EXIT([0])
 END

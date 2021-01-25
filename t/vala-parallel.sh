@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012-2020 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Vala support with parallel make.
 
@@ -64,8 +64,8 @@ cd build
 ../configure
 $MAKE -j6
 ls -l . .. # For debugging.
-for x in main 1 2 3 4 5 6; do test -f $x.c; done
-test -f ./zardoz_vala.stamp
+for x in main 1 2 3 4 5 6; do test -f ../$x.c; done
+test -f ../zardoz_vala.stamp
 
 $MAKE distcheck -j4
 

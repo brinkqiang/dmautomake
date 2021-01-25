@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2008-2020 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test AM_PROG_VALAC.
 
@@ -37,9 +37,6 @@ cat > bin/valac << 'END'
 if test "x$1" = x--version; then
   echo "${vala_version-1.2.3}"
 fi
-if test "x$1" = x--api-version; then
-  echo "${vala_version-1.2.3}"
-fi
 exit 0
 END
 chmod +x bin/valac
@@ -47,9 +44,6 @@ chmod +x bin/valac
 cat > bin/valac.old << 'END'
 #! /bin/sh
 if test "x$1" = x--version; then
-  echo 0.1
-fi
-if test "x$1" = x--api-version; then
   echo 0.1
 fi
 exit 0
@@ -80,13 +74,13 @@ $MAKE has-valac
 st=0; vala_version=0.1.2 ./configure 2>stderr || st=$?
 cat stderr >&2
 test $st -eq 0
-grep '^configure: WARNING: Vala compiler not found or too old' stderr
+grep '^configure: WARNING: no proper vala compiler found' stderr
 $MAKE no-valac
 
 st=0; ./configure VALAC="$(pwd)/bin/valac.old" 2>stderr || st=$?
 cat stderr >&2
 test $st -eq 0 || exit 1
-grep '^configure: WARNING: Vala compiler not found or too old' stderr
+grep '^configure: WARNING: no proper vala compiler found' stderr
 $MAKE no-valac
 
 sed 's/^\(AM_PROG_VALAC\).*/\1([1], [: > ok], [: > ko])/' <configure.ac >t

@@ -1,6 +1,6 @@
 # -*- shell-script -*-
 #
-# Copyright (C) 1996-2020 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ########################################################
 ###  IMPORTANT NOTE: keep this file 'set -e' clean.  ###
@@ -102,7 +102,7 @@ is_blocked_signal ()
 {
   # Use perl, since trying to do this portably in the shell can be
   # very tricky, if not downright impossible.  For reference, see:
-  # <https://lists.gnu.org/archive/html/bug-autoconf/2011-09/msg00004.html>
+  # <http://lists.gnu.org/archive/html/bug-autoconf/2011-09/msg00004.html>
   if $PERL -w -e '
     use strict;
     use warnings FATAL => "all";
@@ -778,17 +778,6 @@ require_tool ()
       # if its standard input is not redirected.  See automake bug#14707.
       $CC -? </dev/null \
         || skip_all_ "Microsoft C compiler '$CC' not available"
-      ;;
-    icl)
-      CC=icl
-      # Don't export CFLAGS, as that could have been initialized to only
-      # work with the C compiler detected at configure time.  If the user
-      # wants CFLAGS to also influence 'icl', he can still export CFLAGS
-      # in the environment "by hand" before calling the testsuite.
-      export CC CPPFLAGS
-      echo "$me: running $CC -?"
-      $CC -? >/dev/null \
-        || skip_all_ "Intel C compiler '$CC' not available"
       ;;
     etags)
       # Exuberant Ctags will create a TAGS file even

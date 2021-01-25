@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check that AM_PATH_PYTHON correctly sets all the output variables
 # advertised in the manual.
@@ -28,9 +28,7 @@ CONFIG_SITE=/dev/null; export CONFIG_SITE
 # vary among different python installations, so we need more relaxed
 # and ad-hoc checks for them.  Also, more proper "functional" checks
 # on them should be done in the 'python-virtualenv.sh' test.
-# 
-# This version identification is duplicated in python.m4 (and the manual).
-PYTHON_VERSION=$($PYTHON -c 'import sys; print("%u.%u" % sys.version_info[:2])') || exit 1
+PYTHON_VERSION=$($PYTHON -c 'import sys; print(sys.version[:3])') || exit 1
 PYTHON_PLATFORM=$($PYTHON -c 'import sys; print(sys.platform)') || exit 1
 PYTHON_EXEC_PREFIX='${exec_prefix}'
 PYTHON_PREFIX='${prefix}'

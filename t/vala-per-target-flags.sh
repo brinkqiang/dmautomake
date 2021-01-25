@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1996-2020 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test per-target flags in vala support.
 
@@ -86,8 +86,8 @@ test -f src/xfoo.c
 test -f src/xbar.c
 
 $MAKE distclean
-test ! -e src/xfoo.c
-test ! -e src/xbar.c
+test -f src/xfoo.c
+test -f src/xbar.c
 
 # Re-create Makefile.
 mv config.sav config.status

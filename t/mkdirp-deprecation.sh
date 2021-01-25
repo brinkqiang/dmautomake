@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012-2020 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,26 +12,19 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check that the AM_PROG_MKDIR_P macro is deprecated.  It will be
 # be removed in the next major Automake release.
 
 . test-init.sh
 
-cat > configure.ac <<'END'
-AC_INIT([test], [1.0])
-AM_INIT_AUTOMAKE
-AM_PROG_MKDIR_P
-AC_CONFIG_FILES([Makefile])
-AC_OUTPUT
-END
-
+echo AM_PROG_MKDIR_P >> configure.ac
 : > Makefile.am
 
 grep_err ()
 {
-  loc='^configure.ac:3:'
+  loc='^configure.ac:4:'
   grep "$loc.*AM_PROG_MKDIR_P.*deprecated" stderr
   grep "$loc.* use .*AC_PROG_MKDIR_P" stderr
   grep "$loc.* use '\$(MKDIR_P)' instead of '\$(mkdir_p)'.*Makefile" stderr

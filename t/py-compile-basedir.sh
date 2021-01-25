@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test the '--basedir' option of the 'py-compile' script,
 
@@ -40,10 +40,11 @@ for d in foo foo/bar "$(pwd)/foo" . .. ../foo ''; do
   ./py-compile --basedir "$d" "$f.py" "sub/$f.py"
   find "$d2" # For debugging.
   py_installed "$d2/$f.pyc"
+  py_installed "$d2/$f.pyo"
   py_installed "$d2/sub/$f.pyc"
+  py_installed "$d2/sub/$f.pyo"
   files=$(find "$d2" | grep '\.py[co]$')
-  # with new-enough Python3, there are six files.
-  test $(echo "$files" | wc -l) -eq 4 || $(echo "$files" | wc -l) -eq 6
+  test $(echo "$files" | wc -l) -eq 4
   case $d2 in
     .|..) rm -f $files;;
        *) rm -rf "$d2";;

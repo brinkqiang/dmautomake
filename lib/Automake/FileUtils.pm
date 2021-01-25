@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2020 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ###############################################################
 # The main copy of this file is in Automake's git repository. #
@@ -36,24 +36,21 @@ This perl module provides various general purpose file handling functions.
 
 use 5.006;
 use strict;
-use warnings FATAL => 'all';
-
 use Exporter;
 use File::stat;
 use IO::File;
-
 use Automake::Channels;
 use Automake::ChannelDefs;
 
-our @ISA = qw (Exporter);
-our @EXPORT = qw (&contents
-		  &find_file &mtime
-		  &update_file
-		  &xsystem &xsystem_hint &xqx
-		  &dir_has_case_matching_file &reset_dir_cache
-		  &set_dir_cache_file);
+use vars qw (@ISA @EXPORT);
 
-=over 4
+@ISA = qw (Exporter);
+@EXPORT = qw (&contents
+	      &find_file &mtime
+	      &update_file &up_to_date_p
+	      &xsystem &xsystem_hint &xqx
+	      &dir_has_case_matching_file &reset_dir_cache
+	      &set_dir_cache_file);
 
 =item C<find_file ($file_name, @include)>
 
@@ -179,6 +176,34 @@ sub update_file ($$;$)
 	or fatal "cannot rename $from as $to: $!";
       msg 'note', "'$to' is created";
     }
+}
+
+
+=item C<up_to_date_p ($file, @dep)>
+
+Is C<$file> more recent than C<@dep>?
+
+=cut
+
+# $BOOLEAN
+# &up_to_date_p ($FILE, @DEP)
+# ---------------------------
+sub up_to_date_p ($@)
+{
+  my ($file, @dep) = @_;
+  my $mtime = mtime ($file);
+
+  foreach my $dep (@dep)
+    {
+      if ($mtime < mtime ($dep))
+	{
+	  verb "up_to_date ($file): outdated: $dep";
+	  return 0;
+	}
+    }
+
+  verb "up_to_date ($file): up to date";
+  return 1;
 }
 
 
@@ -331,7 +356,7 @@ same file).
 
 =cut
 
-our %_directory_cache;
+use vars '%_directory_cache';
 sub dir_has_case_matching_file ($$)
 {
   # Note that print File::Spec->case_tolerant returns 0 even on MacOS
@@ -380,8 +405,21 @@ sub set_dir_cache_file ($$)
     if exists $_directory_cache{$dirname};
 }
 
-=back
-
-=cut
-
 1; # for require
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,14 +12,14 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Interaction of 'nobase_' and 'nodist_' prefixes.
 
 . test-init.sh
 
 # Simulate no emacs and no python (it shouldn't be needed in this test).
-EMACS="no" PYTHON=":"; export EMACS PYTHON
+EMACS="no" PYTHON=":"; export EMCAS PYTHON
 
 cat >> configure.ac << 'END'
 AM_PATH_LISPDIR

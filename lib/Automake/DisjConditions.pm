@@ -1,4 +1,4 @@
-# Copyright (C) 1997-2020 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,16 +11,14 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package Automake::DisjConditions;
 
 use 5.006;
 use strict;
-use warnings FATAL => 'all';
-
 use Carp;
-use Automake::Condition qw (TRUE FALSE);
+use Automake::Condition qw/TRUE FALSE/;
 
 =head1 NAME
 
@@ -141,7 +139,7 @@ ignored.
 # Keys in this hash are DisjConditions strings. Values are the
 # associated object DisjConditions.  This is used by 'new' to reuse
 # DisjConditions objects with identical conditions.
-our %_disjcondition_singletons;
+use vars '%_disjcondition_singletons';
 
 sub new ($;@)
 {
@@ -540,3 +538,20 @@ Alexandre Duret-Lutz <adl@gnu.org>.
 =cut
 
 1;
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:
