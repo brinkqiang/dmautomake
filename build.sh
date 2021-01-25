@@ -10,7 +10,7 @@
 # sh configure
 # popd
 
-./configure
+sh configure
 make
 
 # echo continue && read -n 1
