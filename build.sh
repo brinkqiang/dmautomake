@@ -13,6 +13,4 @@
 ./configure
 make
 
-# popd
-
 # echo continue && read -n 1
