@@ -2,7 +2,7 @@
 ## testsuite.  This fragment is meant to be included by the Makefile.am,
 ## but also to be executed directly by make when bootstrapping automake.
 
-## Copyright (C) 2011-2014 Free Software Foundation, Inc.
+## Copyright (C) 2011-2018 Free Software Foundation, Inc.
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # FIXME: this "expected failures" are in truth an hack used to
 # FIXME: to verify that some incorrect usages of our perl libraries
@@ -41,8 +41,6 @@ t/java-nobase.sh \
 t/objext-pr10128.sh \
 t/remake-timing-bug-pr8365.sh \
 t/lex-subobj-nodep.sh \
-t/subobj-indir-pr13928.sh \
-t/subobj-vpath-pr13928.sh \
 t/remake-am-pr10111.sh \
 t/remake-m4-pr10111.sh \
 $(perl_fake_XFAIL_TESTS)
@@ -273,6 +271,7 @@ t/compile3.sh \
 t/compile4.sh \
 t/compile5.sh \
 t/compile6.sh \
+t/compile7.sh \
 t/compile_f90_c_cxx.sh \
 t/compile_f_c_cxx.sh \
 t/cond-basic.sh \
@@ -391,6 +390,7 @@ t/depend3.sh \
 t/depend4.sh \
 t/depend5.sh \
 t/depend6.sh \
+t/depend-postproc.sh \
 t/deprecated-acinit.sh \
 t/destdir.sh \
 t/dir-named-obj-is-bad.sh \
@@ -409,6 +409,7 @@ t/dist-missing-m4.sh \
 t/dist-readonly.sh \
 t/dist-repeated.sh \
 t/dist-pr109765.sh \
+t/dist-vs-built-sources.sh \
 t/distcleancheck.sh \
 t/distcom2.sh \
 t/distcom3.sh \
@@ -602,6 +603,7 @@ t/lflags.sh \
 t/lflags-cxx.sh \
 t/libexec.sh \
 t/libobj-basic.sh \
+t/libobj-no-dependency-tracking.sh \
 t/libobj2.sh \
 t/libobj3.sh \
 t/libobj4.sh \
@@ -654,6 +656,7 @@ t/lisp5.sh \
 t/lisp6.sh \
 t/lisp7.sh \
 t/lisp8.sh \
+t/lisp-readonly-srcdir.sh \
 t/lisp-loadpath.sh \
 t/lisp-subdir.sh \
 t/lisp-subdir2.sh \
@@ -866,7 +869,6 @@ t/posixsubst-programs.sh \
 t/posixsubst-scripts.sh \
 t/posixsubst-sources.sh \
 t/posixsubst-tests.sh \
-t/postproc.sh \
 t/ppf77.sh \
 t/pr2.sh \
 t/pr9.sh \
@@ -1063,7 +1065,9 @@ t/subobjname.sh \
 t/subobj-clean-pr10697.sh \
 t/subobj-clean-lt-pr10697.sh \
 t/subobj-indir-pr13928.sh \
+t/subobj-objname-clash.sh \
 t/subobj-vpath-pr13928.sh \
+t/subobj-pr13928-more-langs.sh \
 t/subpkg.sh \
 t/subpkg2.sh \
 t/subpkg3.sh \

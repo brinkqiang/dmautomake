@@ -1,3 +1,1190 @@
+2018-02-25  Mathieu Lirzin  <mthl@gnu.org>
+
+	version 1.16
+
+	* configure.ac (AC_INIT, APIVERSION): Bump version number to 1.16.
+	* m4/amversion.m4: Likewise (auto-updated by "make bootstrap").
+	* NEWS: Record release version.
+
+2018-02-25  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update INSTALL
+
+	* INSTALL: Use single quotes.
+
+2018-02-25  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Remove tests intended only for the 'next' branch
+
+	The commit 199e7a445040270fa5ef67623c56cde40d765199 "Prefer https: URLS"
+	which is a cherry-pick of b09d945b795ab9deed2bc457289cd5f41c506b50 from
+	'next' to 'master' has mistakenly copied some tests only present on the
+	'next' branch.
+
+	* t/am-prog-mkdir-p.sh: Delete.
+	* t/txinfo-no-split.sh: Likewise.
+
+2018-02-25  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update files from upstream with 'make fetch'
+
+	* lib/config.guess: Update
+	* lib/config.sub: Likewise.
+	* lib/gendocs.sh: Likewise.
+	* lib/gendocs_template: Likewise.
+	* lib/gitlog-to-changelog: Likewise.
+	* lib/gnupload: Likewise.
+	* lib/texinfo.tex: Likewise.
+	* lib/update-copyright: Likewise.
+
+2018-02-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	python: Avoid exceeding command-line length limit
+
+	With Python implementations following PEP-3174, a large number of files
+	are installed in the ‘__pycache__’ directory.  As a consequence
+	“t/instmany-python.sh” test was failing due to the
+	‘uninstall-pythonPYTHON’ target deleting installed files in a single
+	‘rm’ command.  Doing that in multiple steps avoids exceeding the
+	command-line length limit.  This fixes bug#30335.
+
+	* lib/am/python.am (uninstall-%DIR%PYTHON): For byte-compiled files
+	installed in '__pycache__' directory, uninstall them by batch of 40.
+	[?FIRST?] (am__pep3147_tweak): Adapt.
+
+2018-02-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Don't check 'Getopt::Long' corner cases
+
+	Depending on the installed 'Getopt::Long' perl module, command-line
+	handling may vary a bit.  As a consequence we prefer not to check
+	command-line corners cases.  This change fixes automake bug#29638.
+
+	* t/aclocal.sh (am_create_testdir): Don't expect "--versi" to be
+	interpreted as "--version".
+	* t/automake-cmdline.tap: Don't expect "--vers" to be interpreted as
+	"--version" and things after "--" to be interpreted as file arguments.
+	(do_check): Display the actual command output.
+	* t/maken3.sh (check_targets): "--force" is not a documented option, so
+	don't use it.
+
+2018-02-04  Mathieu Lirzin  <mthl@gnu.org>
+
+	python: Generate python interpreter list
+
+	_AM_PYTHON_INTERPRETER_LIST is used by AM_PYTHON_PATH to autodetect
+	Python programs whose names correspond to a specific Python
+	version (e.g. python3.6).  Previously this list was updated manually.
+	The automatic support of newer versions (up to 4.0 excluded) fixes
+	bug#28160.
+
+	* m4/python.m4 (am_py_min_ver, am_py_max_ver): New macros.
+	(_AM_PYTHON_INTERPRETER_LIST): Generate this list instead of hard-coding
+	it.  Implementation is taken from GNU Pyconfigure.
+
+2018-01-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Improve comment in 'txinfo-many-output-formats.sh'
+
+	* t/txinfo-many-output-formats.sh: Explain why AM_MAKEINFOFLAGS is set
+	with an invalid option.
+
+2018-01-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Distribute DEJATOOL files manually
+
+	"t/check12.sh" was failing because files declared in DEJATOOL are not
+	automatically distributed.  The test running 'make distcheck' couldn't succeed
+	since some scripts were not distributed.  This fixes automake bug#26738.
+
+	* t/check12.sh (Makefile.am): Distribute files from DEJATOOL.
+
+2018-01-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Let 'ltorder.sh' run successfully with Guix dynamic loader
+
+	* t/ltorder.sh: Set GUIX_LD_WRAPPER_ALLOW_IMPURITIES environment variable to
+	unlock the dynamic loader provided by GNU Guix.
+
+2018-01-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Fix various 'flex' compilation issues
+
+	* t/lex-clean-cxx.sh (parsefoo.lxx): Declare 'yylex':
+	(mainfoo.cc): Make declaration compatible with C++.
+	* t/lex-depend-cxx.sh (joe.ll): Declare 'yylex'.
+	* t/silent-many-languages.sh (Makefile.am, sub/Makefile.am): Link -lfl only
+	with 'fo2' and 'sub/ba2' which are the only program needing it.
+	(foo5.l): Define 'isatty'.
+	(foo6.y): Declare 'yylex'.
+
+2018-01-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Check GCS conformance of 'aclocal' command-line interface
+
+	* t/aclocal.sh: Check that 'aclocal' support the --version and --help
+	command-line options.
+
+2018-01-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	contrib: Add Guile custom test driver using SRFI-64 test harness
+
+	This sets a home for a script already used by GNU Guix and GNU Mcron.
+
+	* contrib/test-driver.scm: New test driver script.
+	* NEWS: Update.
+
+2018-01-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Document how to use Guix for Automake development
+
+	* HACKING <Setting the development environment>: New part.
+
+2018-01-05  Khem Raj  <raj.khem@gmail.com>  (tiny change)
+
+	automake: Add default libtool_tag to cppasm
+
+	* bin/automake.in (register_language): Define default libtool tag to be
+	CC since CPPASCOMPILE is using CC to call assembler.
+
+2018-01-04  Bruno Haible  <bruno@clisp.org>
+
+	doc: Document the portability of various tar formats better
+
+	* doc/automake.texi (List of Automake options): Document the portability of
+	the tar-ustar and tar-pax options better.
+
+2018-01-04  Simon Sobisch  <simonsobisch@web.de>  (tiny change)
+
+	missing: Update displayed URLs
+
+	* lib/missing (perl_URL): Use HTTPS.
+	(flex_URL): Use new Github homepage.
+
+2018-01-04  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update copyright years to 2018
+
+	This update has been made with 'make update-copyright'.
+
+2018-01-04  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Exclude ".dir-locals.el" from copyright updates
+
+	* maintainer/maint.mk (files_without_copyright): Add ".dir-locals.el".
+
+2017-12-17  Jim Meyering  <meyering@fb.com>
+
+	port elisp-compilation support to emacs-23.1 and newer
+
+	In May of 2017, emacs.master support for using the long-deprecated
+	byte-compile-dest-file function was removed, and that removal broke
+	automake's elisp-compiling rule for any .el file not in the current
+	directory.  In emacs-23.1 (July 2009) byte-compile-dest-file-function
+	became the recommended way to adjust the byte-compiler's destination.
+	The removed functionality has been restored for Emacs-26, albeit with
+	dissuasive diagnostics warning about the imminent removal of this
+	functionality.  It will be removed in Emacs-27.
+	* lib/am/lisp.am (.el.elc): Use byte-compile-dest-file-function, rather
+	than byte-compile-dest-file.  Also, use "-f batch-byte-compile '$<'"
+	rather than open-coding it, as suggested by Glenn Morris.
+	* t/lisp-readonly-srcdir.sh: New file, to test for the above.
+	* t/list-of-tests.mk (handwritten_TESTS): Add it.
+	* NEWS (Bugs fixed): Mention this problem.
+
+2017-11-29  Jim Meyering  <meyering@fb.com>
+
+	"make dist" did not depend on $(BUILT_SOURCES)
+
+	* lib/am/distdir.am (distdir-am): New intermediate target.
+	Interpose this target between $(distdir) and its dependency
+	on $(DISTFILES), so that we can ensure $(BUILT_SOURCES) are
+	all created before we begin creating $(DISTFILES).
+	* t/dist-vs-built-sources.sh: Test for this.
+	* t/list-of-tests.mk (handwritten_TESTS): Add it.
+	* NEWS (Bugs fixed): Mention it.
+	Assaf Gordon reported that "make dist" (after ./configure
+	from a pristine clone of GNU hello) would fail due to the
+	absence of configmake.h while compiling lib/localcharset.c.
+	https://lists.gnu.org/r/bug-hello/2014-03/msg00016.html
+
+2017-11-24  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update HACKING
+
+	* HACKING (Working with git): Remove reference to the 'micro' branch and
+	adapt branch descriptions to the current branching scheme.
+
+2017-09-23  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Make Emacs use 'makefile-automake-mode'
+
+	* bin/local.mk: Specify mode name in the first line.
+	* contrib/t/local.mk: Likewise.
+	* doc/local.mk: Likewise.
+	* lib/Automake/local.mk: Likewise.
+	* lib/am/local.mk: Likewise.
+	* lib/local.mk: Likewise.
+	* m4/local.mk: Likewise.
+	* t/local.mk: Likewise.
+
+2017-09-23  Paul Eggert  <eggert@cs.ucla.edu>
+
+	maint: update .gitignore
+
+	* .gitignore: Add pre-inst-env, and sort.
+
+2017-09-23  Paul Eggert  <eggert@cs.ucla.edu>
+
+	install-sh: do not assume / = //
+
+	* lib/install-sh: Do not append / to destination
+	directory if it already ends in /.  This supports
+	a destination directory of // on hosts where / and //
+	are distinct directories, as POSIX allows.
+
+2017-09-23  Paul Eggert  <eggert@cs.ucla.edu>
+
+	maint: fix two more http: URLs
+
+	* m4/init.m4: Change http: to https: in comments.
+
+2017-09-22  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Configure Emacs automatically with ".dir-locals.el"
+
+	* .dir-locals.el: New Emacs directory configuration file.  All perl
+	files adapted.
+
+2017-09-22  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: 'master' should be merged into 'next'
+
+	* HACKING: Fix instructions merge instructions.
+
+2017-09-22  Paul Eggert  <eggert@cs.ucla.edu>
+
+	* lib/mdate.sh (TZ): Use portable setting.
+
+2017-09-20  Mathieu Lirzin  <mthl@gnu.org>
+
+	Merge branch 'minor'
+
+2017-09-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Document new Branch names convention
+
+	* HACKING: Update to new Branch names.
+
+2017-09-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Reset master
+
+2017-09-19  Mathieu Lirzin  <mthl@gnu.org>
+
+	Merge branch 'minor'
+
+2017-09-19  Paul Eggert  <eggert@cs.ucla.edu>
+
+	make fetch
+
+2017-09-19  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Fix a couple more http: URLs
+
+2017-09-19  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Prefer https: URLs
+
+	In Gnulib, Emacs, etc. we are changing ftp: and http: URLs to use
+	https:, to discourage man-in-the-middle attacks when downloading
+	software. The attached patch propagates these changes upstream to
+	Automake.  This patch does not affect files that Automake is
+	downstream of, which I'll patch separately.
+
+	Althouth the resources are not secret, plain HTTP is vulnerable to
+	malicious routers that tamper with responses from GNU servers,
+	and this sort of thing is all too common when people in some other
+	countries browse US-based websites. See, for example:
+
+	Aceto G, Botta A, Pescapé A, Awan MF, Ahmad T, Qaisar
+	S. Analyzing internet censorship in Pakistan. RTSI
+	2016. https://dx.doi.org/10.1109/RTSI.2016.7740626
+
+	HTTPS is not a complete solution here, but it can be a significant
+	help. The GNU project regularly serves up code to users, so we should
+	take some care here.
+
+2017-09-17  Paul Eggert  <eggert@cs.ucla.edu>
+
+	make fetch
+
+2017-09-17  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Fix a couple more http: URLs
+
+2017-09-16  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Prefer https: URLs
+
+	In Gnulib, Emacs, etc. we are changing ftp: and http: URLs to use
+	https:, to discourage man-in-the-middle attacks when downloading
+	software. The attached patch propagates these changes upstream to
+	Automake.  This patch does not affect files that Automake is
+	downstream of, which I'll patch separately.
+
+	Althouth the resources are not secret, plain HTTP is vulnerable to
+	malicious routers that tamper with responses from GNU servers,
+	and this sort of thing is all too common when people in some other
+	countries browse US-based websites. See, for example:
+
+	Aceto G, Botta A, Pescapé A, Awan MF, Ahmad T, Qaisar
+	S. Analyzing internet censorship in Pakistan. RTSI
+	2016. https://dx.doi.org/10.1109/RTSI.2016.7740626
+
+	HTTPS is not a complete solution here, but it can be a significant
+	help. The GNU project regularly serves up code to users, so we should
+	take some care here.
+
+2017-09-15  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Document how to handle assignment exemption
+
+	* HACKING: Update.
+
+2017-09-15  Reiner Herrmann  <reiner@reiner-h.de>  (tiny change)
+
+	mdate-sh: Ensure reproducible time output
+
+	This change fixes automake bug#20314.
+
+	'mdate-sh' pretty-prints the modification time of a file.  But it's
+	output can vary depending on the timezone of the caller. Someone in
+	timezone GMT-12 will get a different result (day) than someone in
+	timezone GMT+12.  As this output is also used to create/update stamp
+	files, which influence the further build process, the build result can
+	vary.
+
+	* lib/mdate-sh: Set 'TZ' to UTC which ensures reproducible output.
+	* NEWS: Announce bug fix.
+
+2017-09-15  Michael Haubenwallner  <michael.haubenwallner@ssi-schaefer.com>
+
+	automake: Depend on LIBOBJDIR for LIBOBJS and ALLOCA
+
+	This change fixes automake bug#27781.
+
+	* bin/automake.in: Add Makefile dependency on LIBOBJDIR/dirstamp for
+	each LIBOBJS/ALLOCA source file found.
+	* t/list-of-tests.mk (XFAIL_TESTS): Drop
+	t/libobj-no-dependency-tracking.sh.
+	* NEWS: Announce bug fix.
+
+2017-09-14  Mathieu Lirzin  <mthl@gnu.org>
+
+	Revert "automake: Handle LTLIBOBJS more specifically"
+
+	This reverts commit 5521219348c55af354878583b99c5f9d66d6d38a.
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	Merge branch 'minor'
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Rename "Makefile.inc" Makefile fragments to "local.mk"
+
+	This is done to follow a convention used by a lot of GNU packages.
+
+	* bin/Makefile.inc: Rename to ...
+	* bin/local.mk: ... this.
+	* doc/Makefile.inc: Rename to ...
+	* doc/local.mk: ... this.
+	* lib/Automake/Makefile.inc: Rename to ...
+	* lib/Automake/local.mk: ... this.
+	* lib/am/Makefile.inc: Rename to ...
+	* lib/am/local.mk: ... this.
+	* lib/Makefile.inc: Rename to ...
+	* lib/local.mk: ... this.
+	* m4/Makefile.inc: Rename to ...
+	* m4/local.mk: ... this.
+	* contrib/t/Makefile.inc: Rename to ...
+	* contrib/t/local.mk: ... this.
+	* t/Makefile.inc: Rename to ...
+	* t/local.mk: ... this.  Adapt.
+	* Makefile.am: Adapt.
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	Merge branch 'micro' into minor
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Define API version manually
+
+	* configure.ac (APIVERSION): Define it to 1.15a.
+	* bootstrap (APIVERSION): Parse 'configure.ac' to get it.
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Inline perl prototypes in sources
+
+	Prototypes allows us to avoid using the '&foo' invocation form when
+	invoking a subroutine before its definition.  Previously those
+	prototypes were generated to prevent them from falling out-of-sync
+	with actual definitions.  Now we provide a 'check-perl-protos' lint
+	script to ensure that this is not the case.  This has the same
+	benefits as generating prototypes while simplifying the
+	bootstrap/build process.
+
+	* bin/gen-perl-protos: Remove.
+	* bin/Makefile.inc: Adapt.
+	* bootstrap: Likewise.
+	* bin/aclocal.in: Inline prototypes.
+	* bin/automake.in: Likewise.
+	* maintainer/check-perl-protos: New lint script.
+	* maintainer/syntax-checks.mk (sc_perl_protos): New target.
+	(syntax_check_rules): Add it.
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Generate versioned scripts at make time
+
+	* configure.ac: Don't generate 'bin/aclocal-${APIVERSION}' and
+	'bin/automake-${APIVERSION}'.
+	* bin/wrap-aclocal.in: Delete.
+	* bin/wrap-automake.in: Likewise.
+	* bin/Makefile.inc (%D%/automake-$(APIVERSION))
+	(%D%/aclocal-$(APIVERSION)): New targets.
+	(CLEANFILES): Add them.
+
+2017-08-31  Mathieu Lirzin  <mthl@gnu.org>
+
+	aclocal: Support ACLOCAL_AUTOMAKE_DIR environment variable
+
+	* bin/aclocal.in: Reset '@automake_includes' and '@system_includes' in
+	for build environment.  Allow setting '@automake_includes' with
+	ACLOCAL_AUTOMAKE_DIR environment variable.
+	(parse_arguments): Ignore 'dirlist' when '@system_includes' is empty.
+	* doc/automake.texi (aclocal Options): Document ACLOCAL_AUTOMAKE_DIR.
+	* bin/wrap-aclocal.in: Remove extra command line options.
+	* pre-inst-env.in: Set ACLOCAL_AUTOMAKE_DIR and ACLOCAL_PATH
+	environment variables.
+	* t/ax/test-defs.in: Adapt.
+	* t/ansi2knr-no-more.sh (warn_rx): Likewise.
+
+2017-08-30  Mathieu Lirzin  <mthl@gnu.org>
+
+	config: Support AUTOMAKE_LIBDIR environment variable
+
+	* lib/Automake/Config.in: Let AUTOMAKE_LIBDIR environment variable
+	override the default location for '$libdir'.
+	* doc/automake.texi (automake Invocation): Document AUTOMAKE_LIBDIR.
+	* pre-inst-env.in (AUTOMAKE_LIBDIR): Set AUTOMAKE_LIBDIR.
+	* bin/wrap-automake.in: Don't use "--libdir" option.
+
+2017-08-29  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Use PERL5LIB from 'pre-inst-env' script
+
+	* bin/aclocal.in: Detect build environment with AUTOMAKE_UNINSTALLED.
+	Let 'PERL5LIB' from 'pre-inst-env' define the perl module directories.
+	* bin/automake.in: Likewise.
+	* bin/wrap-aclocal.in: Don't set 'Automake::perl_libdirs' anymore.
+	* bin/wrap-automake.in: Likewise.
+	* t/Makefile.inc (LOG_COMPILER, PL_LOG_COMPILER): Use 'pre-inst-env'.
+	(AM_PL_LOG_FLAGS): Don't set perl module path.
+
+2017-08-29  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Extend PATH from 'pre-inst-env' script
+
+	* configure.ac (ACLOCAL, AUTOMAKE): Use 'pre-inst-env'.
+	* Makefile.am (extend_PATH): Delete.
+	* doc/Makefile.inc (update_mans, $(srcdir)/%D%/amhello-1.0.tar.gz)
+	(setup_autotools_paths): Use 'pre-inst-env' instead of $(extend_PATH).
+
+2017-08-29  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Add 'pre-inst-env' wrapper script
+
+	This script allows someone building Automake from source to easily run
+	'automake' and 'aclocal' without having to install it or knowing the
+	existence of "wrapped" scripts in "bin" directory.
+
+	* pre-inst-env.in: New script.
+	* configure.ac: Generate 'pre-inst-env' at configure time.
+	* Makefile.am (nodist_noinst_SCRIPTS, CLEANFILES): Add it.
+
+2017-08-29  Mathieu Lirzin  <mthl@gnu.org>
+
+	build: Move wrapped scripts in "bin" directory
+
+	Those scripts are used both in the build process and for the tests, so
+	it seems clearer to not hide them in "t/wrap" directory.
+
+	* t/wrap/aclocal.in: Rename to ...
+	* bin/wrap-aclocal.in: ... this.
+	* t/wrap/automake.in: Rename to ...
+	* bin/wrap-automake.in: ... this.
+	* configure.ac: Generate "bin/aclocal-${APIVERSION}" and
+	"bin/automake-${APIVERSION}" at configure time.
+	* t/Makefile.inc (nodist_noinst_SCRIPTS): Move wrapped scripts ...
+	* bin/Makefile.inc (nodist_noinst_SCRIPTS): ... here.
+	* Makefile.am (extend_PATH): Use "bin" directory.
+	* t/ax/test-defs.in (am_bindir): Likewise.
+	* t/get-sysconf.sh: Likewise.
+	* .gitignore: Update.
+
+2017-08-27  Mathieu Lirzin  <mthl@gnu.org>
+
+	automake: Handle LTLIBOBJS more specifically
+
+	* bin/automake.in (handle_LIBOBJS_or_ALLOCA): Remove complex regexp
+	substitution when handling LTLIBOBJS.
+
+2017-08-22  Michael Haubenwallner  <michael.haubenwallner@ssi-schaefer.com>
+
+	automake: Ensure that LIBOBJ_DIR builddir is created
+
+	* t/libobj-no-dependency-tracking.sh: New test reproducing the issue
+	described in automake bug#27781.
+	* t/list-of-tests.mk (handwritten_TESTS, XFAIL_TESTS): Add it.
+
+2017-08-08  Mathieu Lirzin  <mthl@gnu.org>
+
+	doc: Update to latest help2man
+
+	This fixes bug#27773.
+
+	* doc/help2man: Sync with version 1.47.3 to support reproducible
+	builds by using $SOURCE_DATE_EPOCH.
+
+2017-07-16  Mathieu Lirzin  <mthl@gnu.org>
+
+	doc: Fix typo "nothing" => "noting"
+
+	This fixes bug#24476.
+
+	* doc/automake.texi (Checking the Distribution): Fix typo.
+	* THANKS: Update.
+
+2017-07-16  Mathieu Lirzin  <mthl@gnu.org>
+
+	doc: Fix typos
+
+	This fixes bug#23099.
+
+	* doc/automake.texi (Scripts-based Testsuites)
+	(Parallel Test Harness): Fix typos.
+	* THANKS: Update.
+
+2017-07-16  Mathieu Lirzin  <mthl@gnu.org>
+
+	check: Make 'check-TESTS' target depend on test dependencies
+
+	The 'check' and 'recheck' targets are already depending on the progams
+	and scripts required to run the test suite.  The 'check-TESTS' target
+	while not in the public API might be used by uninformed users, so it
+	makes sense to add the same dependency to it.  This fixes bug#27186.
+
+	* lib/am/check.am [!%?SERIAL_TESTS%] (check-TESTS): Add dependency to
+	'%CHECK_DEPS%'.
+	* THANKS: Update.
+
+2017-07-15  Mathieu Lirzin  <mthl@gnu.org>
+
+	dejagnu: Allow AM_RUNTESTFLAGS to override default RUNTEST arguments
+
+	This fixes bug#25335.
+
+	* lib/am/dejagnu.am (check-DEJAGNU): Swap $(RUNTESTDEFAULTFLAGS) and
+	$(AM_RUNTESTFLAGS).
+	* THANKS: Update.
+
+2017-07-15  Thomas Jahns  <jahns@dkrz.de>
+
+	aclocal: Avoid problematic string interpolation
+
+	This fixes bug#20903.  Thanks to Eric Bavier for reporting this issue.
+
+	* bin/aclocal.in (automake_includes): Avoid problematic string
+	interpolation.
+	* NEWS: Update.
+	* THANKS: Thank Eric Bavier.
+
+2017-07-15  Mathieu Lirzin  <mthl@gnu.org>
+
+	python: Add python3.6
+
+	This fixes bug#27458.
+
+	* m4/python.m4 (AM_PATH_PYTHON): Add python3.6.
+
+2017-07-06  Thomas Martitz  <kugel@rockbox.org>
+
+	automake: Shorter object file names under subdir-objects
+
+	Combining the 'subdir-objects' option with target-specific flags had
+	the consequence of producing long object file names.  This was done to
+	preventively ensure the uniqueness of object file names.  We are now
+	using shorter names by default, and handle long names when an actual
+	conflict is detected.  This will hopefully reduce the necessity of
+	using the 'prog_SHORTNAME' facility.
+
+	Example:
+	previously:
+	  AUTOMAKE_OPTIONS = subdir-objects
+	  bin_PROGRAMS += path/to/foo
+	  path_to_foo_CFLAGS = $(AM_CFLAGS) -g
+
+	resulted in objects:
+	  sub/path_to_foo-foo.o
+
+	now object file name is:
+	  sub/foo-foo.o
+
+	* bin/automake.in (proglist, liblist, ltliblist)
+	(dup_shortnames): New globals.
+	(initialize_per_input): Initialize them.
+	(handle_targets): New subroutine.
+	(handle_single_transform): Truncate object file names when possible.
+	* t/subobj-objname-clash.sh: New test.
+	* t/list-of-tests.mk (handwritten_TESTS): Add it.
+	* NEWS: Update.
+
+2017-06-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Post-release administrivia
+
+	* NEWS: Add header line for next release.
+	* configure.ac (AC_INIT): Bump version number to 1.15.1a.
+	* m4/amversion.m4: Likewise (auto-updated by "make bootstrap").
+
+2017-06-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	version 1.15.1
+
+	* configure.ac (AC_INIT): Bump version number to 1.15.1.
+	* m4/amversion.m4: Likewise (auto-updated by "make bootstrap").
+
+2017-06-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update 'git-tag-release' rule
+
+	* maintainer/maint.mk (git-tag-release): Use a Git tag message similar
+	to what the 'do-release-commit-and-tag' script from Gnulib do.
+
+2017-06-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update files from upstream with 'make fetch'
+
+	* lib/config.guess: Update.
+	* lib/config.sub: Likewise.
+	* lib/texinfo.tex: Likewise.
+
+2017-06-18  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update NEWS
+
+	* NEWS: Announce important bug fixes.
+
+2017-06-16  Mathieu Lirzin  <mthl@gnu.org>
+
+	Merge branch 'minor'
+
+2017-06-16  Mathieu Lirzin  <mthl@gnu.org>
+
+	Merge branch 'micro' into minor
+
+2017-05-20  Mathieu Lirzin  <mthl@gnu.org>
+
+	bootstrap: Add a rationale for the bootstrap process.
+
+	* bootstrap: Explain why we can't simply run 'autoreconf -i'.
+
+2017-05-20  Mathieu Lirzin  <mthl@gnu.org>
+
+	bootstrap: Rename 'bootstrap.sh' to 'bootstrap'.
+
+	Follow Gnulib's convention of using either "bootstrap" or "autogen.sh"
+	file names for development bootstrap scripts.
+
+	* bootstrap.sh: Rename to ...
+	* bootstrap: ... this.
+	* GNUmakefile (bootstrap): Adapt.
+	* HACKING: Likewise.
+	* Makefile.am (EXTRA_DIST): Likewise.
+	* doc/automake.texi (Future of aclocal)
+	(Error required file ltmain.sh not found): Likewise.
+	* maintainer/maint.mk (autodiffs, update-copyright): Likewise.
+
+2017-05-20  Mathieu Lirzin  <mthl@gnu.org>
+
+	automake: Update 'read_am_file' docstring.
+
+	* bin/automake.in (read_am_file): Update docstring which was referring
+	to a non existent '%contents' variable.
+
+2017-04-16  Bruno Haible  <bruno@clisp.org>
+
+	tests: Never invoke gettextize.
+
+	This change fixes automake bug#26514.
+
+	* t/gettext-macros.sh: Never invoke gettextize.
+
+2017-04-13  Mathieu Lirzin  <mthl@gnu.org>
+
+	tests: Update "t/txinfo-no-clutter.sh".
+
+	This is workaround to a regression introduced by
+	48107579abadbe857c8299c38d2ca0a3f8f354c8.  With current
+	"lib/texinfo.tex", 'texi2dvi' is not able to produce a valid output
+	for a Texinfo document containing a @synindex command.  As a
+	consequence the test "t/txinfo-no-clutter.sh" was failing.
+
+	* t/txinfo-no-clutter.sh: Remove use of @synindex command.
+
+2017-03-05  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update "lib/texinfo.tex".
+
+	This fixes a regression in 48107579abadbe857c8299c38d2ca0a3f8f354c8
+	where 'texi2dvi' was not able to produce a valid output for a Texinfo
+	document without text.  As a consequence the test "t/silent-texi.sh"
+	was failing.
+
+	* lib/texinfo.tex: Update to 2017-03-05.09.
+
+2017-03-02  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update copyright years to 2017.
+
+	This update has been made with 'make update-copyright'.
+
+2017-03-02  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update files from upstream with 'make fetch'.
+
+	* lib/INSTALL: Update.
+	* lib/config.guess: Likewise.
+	* lib/config.sub: Likewise.
+	* lib/gendocs.sh: Likewise.
+	* lib/gendocs_template: Likewise.
+	* lib/gitlog-to-changelog: Likewise.
+	* lib/gnupload: Likewise.
+	* lib/texinfo.tex: Likewise.
+	* lib/update-copyright: Likewise.
+
+2017-03-02  Mathieu Lirzin  <mthl@gnu.org>
+
+	maint: Update fetch URLs.
+
+	* maintainer/maint.mk (SV_CVS, SV_GIT_AC): Remove.
+	(SV_GIT_CF, SV_GIT_GL): Use https for Savannah Git repositories.
+	(FETCHFILES): Use Gnulib repository as the source of "texinfo.tex",
+	"gendocs.sh", and "gendocs_template" files.
+
+2017-02-23  Mathieu Lirzin  <mthl@gnu.org>
+
+	doc: fix typo "requited" => "required"
+
+	This change fixes automake bug#25413.
+
+	* doc/automake.texi (Serial Test Harness): Fix typo.
+
+2017-01-01  Jim Meyering  <meyering@fb.com>
+
+	maint: update copyright dates for 2017
+
+	* all files: Run this command, using update-copyright from gnulib:
+	  UPDATE_COPYRIGHT_FORCE=1 \
+	  UPDATE_COPYRIGHT_USE_INTERVALS=2 \
+	  UPDATE_COPYRIGHT_MAX_LINE_LENGTH=79 \
+	   update-copyright $(git ls-files)
+
+2016-09-09  Jim Meyering  <meyering@fb.com>
+
+	automake: do not emit rule with two dependents
+
+	On a system using our replacement alloca, make would emit
+	this warning:
+	  target '.deps/alloca.Po' given more than once in the same rule
+	That arose because automake would emit a rule depending on both
+	./.deps/alloca.Po and .deps/alloca.Po. Normally, duplicate
+	dependents are avoided by virtue of their names being keys in
+	the %dep_files hash, but in this case, that particular file
+	was specified in two different ways.
+	* bin/automake.in (handle_ALLOCA): When the $dir prefix is empty,
+	make it './', to ensure that when we add ./.deps/alloca.Po
+	it is deduped.
+	See: http://bugs/gnu/org/22702
+
+2016-06-02  Jim Meyering  <meyering@fb.com>
+
+	compile: remove .Tpo file upon failure
+
+	When generating a .deps/base.Po file, our emitted rule first writes
+	to a temporary .Tpo file, so the final creation can be atomic, via
+	mv's rename.  However, when generation of the .Tpo fails, it stop the
+	process and does not remove that temporary file.  And nothing else
+	ever deletes it, either.  Hence, in the unusual case in which one
+	expects a compilation to fail during a successful build (gnulib's
+	test-verify.sh does precisely this), a .deps/test-verify.Tpo file
+	would be left behind, and that would in turn cause a "make distcheck"
+	failure because that file would exist in one build+distclean hierarchy
+	but not in the distribution tarball.
+	* lib/am/depend2.am: Ensure that the temporary file is removed
+	upon failure.
+	* t/distcheck-Tpo.sh: New file.
+	* t/list-of-tests.mk (handwritten_TESTS): Add it.
+	This addresses bug#23661.
+
+2016-04-21  Paul Eggert  <eggert@cs.ucla.edu>
+
+	python: add python3.5, python3.4
+
+	* m4/python.m4 (AM_PATH_PYTHON): Add python3.5, python3.4.
+
+2016-04-01  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Merge branch 'minor'
+
+2016-04-01  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Merge branch 'micro' into minor
+
+2016-04-01  Paul Eggert  <eggert@cs.ucla.edu>
+
+	automake: port to Perl 5.22 and later
+
+	Without this change, Perl 5.22 complains "Unescaped left brace in
+	regex is deprecated" and this is planned to become a hard error in
+	Perl 5.26.  See:
+	http://search.cpan.org/dist/perl-5.22.0/pod/perldelta.pod#A_literal_%22{%22_should_now_be_escaped_in_a_pattern
+	* bin/automake.in (substitute_ac_subst_variables): Escape left brace.
+
+2016-03-29  Paul Eggert  <eggert at>
+
+	automake: port better to future gzip
+
+	* lib/am/distdir.am (dist-gzip, dist-shar, distcheck):
+	Port better to future versions of gzip, which are planned to
+	deprecate the GZIP environment variable (Bug#20132).
+
+2016-01-12  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Merge branch 'minor'
+
+2016-01-12  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Merge branch 'micro' into minor
+
+2016-01-12  Paul Eggert  <eggert@cs.ucla.edu>
+
+	maint: port time-stamp-time-zone to strict POSIX
+
+	Set time-stamp-time-zone to "UTC0", not to "UTC", as POSIX defines
+	TZ="UTC0" not TZ="UTC".
+
+2015-11-24  Peter Rosin  <peda@lysator.liu.se>
+
+	Merge branch 'minor'
+
+	* minor:
+	  compile: add icl to compile wrapper script
+	  tests: fix a typo-induced bug
+
+2015-11-24  Peter Rosin  <peda@lysator.liu.se>
+
+	Merge branch 'micro' into minor
+
+	* micro:
+	  compile: add icl to compile wrapper script
+
+2015-11-24  Jonathan L Peyton  <jonathan.l.peyton@intel.com>  (tiny change)
+
+	compile: add icl to compile wrapper script
+
+	* lib/compile: Have icl be treated similarly to cl
+	(scriptversion): Update.
+	* t/ax/am-test-lib.sh (require_tool): Handle icl.
+	* t/compile7.sh: Add new test file for icl...
+	* t/list-of-tests.mk (handwritten_TESTS): ...and use it.
+	* NEWS: Update.
+	* THANKS: Update.
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: fix a typo-induced bug
+
+	* t/subobj-vpath-pr13928.sh: Here; we were using $FGREP instead of
+	$EGREP, oops.
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  deps: fix corner-case "make distclean" bug
+	  compile: don't place built object files in $(srcdir), ever ...
+	  tests: fix some bugs in an XFAILing test
+	  deps: 'subdir-object' option now works when foo_SOURCES contains $(var)
+	  NEWS: fix a typo
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'deps-pr13928' into minor
+
+	* deps-pr13928:
+	  deps: fix corner-case "make distclean" bug
+	  compile: don't place built object files in $(srcdir), ever ...
+	  tests: fix some bugs in an XFAILing test
+	  deps: 'subdir-object' option now works when foo_SOURCES contains $(var)
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'micro' into minor
+
+	* micro:
+	  NEWS: fix a typo
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	deps: fix corner-case "make distclean" bug
+
+	Assume we have package satisfying the following conditions:
+	  (1) automatic dependency tracking is enabled;
+	  (2) the 'subdir-objects' Automake option is enabled;
+	  (3) the package uses a recursive make setup.
+
+	Also assume that:
+	  (a) a subdir Makefile declares a foo_SOURCES variable containing
+	      a source file in the parent directory;
+	  (b) that parent Makefile declare a compiled program itself.
+
+	Then BSD and Solaris make used to fail when running "make distclean",
+	because the 'distclean' target of the subdir Makefile removed the
+	whole '.deps' directory before the parent Makefile was done with the
+	included '.Po' makefile fragments in that directory. This issue was
+	revealed by failures in the 'subobj-vpath-pr13928.sh' test when those
+	make implementations were used.
+
+	We fix the issue by ensuring the 'distclean' target of any Makefile
+	only removed the '.Po' makefile fragments included by it, rather than
+	the whole '.deps' directory where such files resides.
+
+	This change should be the last step in fixing automake bug#13928
+	for good.
+
+	* bin/automake.in (handle_languages), lib/am/depend.am: Adjust
+	to implement the new 'distclean' logic.
+	* t/pr224.sh: Adjust to avoid a spurious failure.
+	* PLANS/subdir-objects.txt: Update.
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	compile: don't place built object files in $(srcdir), ever ...
+
+	... even when a source file is specified as '$(srdir)/foo.c' or
+	'$(top_srcdir)/bar.c'. And ditto for dependency-tracking makefile
+	fragments (those under '.deps' directories).
+
+	Such issues used to occur when the 'subdir-objects' option was given.
+
+	This change should fix the second and last part of automake bug#13928.
+	See also bug#16375 and bug#15293.
+
+	* NEWS: Update.
+	* bin/automake.in (handle_single_transform): Make sure object files
+	and dependency-tracking makefile fragments coming from source like
+	'$(srcdir)/foo.c' and '$(top_srcdir)/bar.c' are placed respectively
+	under $(builddir) and $(top_builddir).
+	* t/subobj-vpath-pr13928.sh: Enhance to expose even more aspects
+	of the bug we've just fixed.
+	* t/subobj-pr13928-more-langs.sh: New test, similar to the one above,
+	but with non-C languages as well.
+	* t/list-of-tests.mk (XFAIL_TESTS): Remove 'subobj-vpath-pr13928.sh',
+	it's now supposed to pass.
+	(handwritten_TESTS): Add 'subobj-pr13928-more-langs.sh'.
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: fix some bugs in an XFAILing test
+
+	* t/subobj-vpath-pr13928.sh: This one. The test would have failed (or
+	hung!) even if the bug it was testing against were fixed.
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	deps: 'subdir-object' option now works when foo_SOURCES contains $(var)
+
+	Following a suggestions of Johan Kristensen, we have config.status use
+	'make' invocations rather than Makefile-parsing 'sed' hacks to bootstrap
+	the dependency-tracking '.Po' and '.Plo' makefile fragments. To handle
+	the inclusion of such files that are still missing when make is first
+	we basically generate a temporary Makefile without these includes, and
+	call 'make' on that Makefile.
+
+	This fixes the serious bug bug#13928, which was an hard blocker to make the
+	behavior mandated by the 'subdir-object' active by default (which we want
+	to do in Automake 2.0).
+
+	The issue has also been reported in bug#15919.
+
+	* NEWS, THANKS: Update.
+	* bin/automake.in (handle_languages): Add a trailing "marking" comment
+	("# am--include-marker") to the generated Makefile lines issuing 'include'
+	directives for the dependency-tracking '.Po' and '.Plo' makefile fragments.
+	Also rename the generated Makefile variable 'am__depfiles_maybe' to the
+	clearer 'am__maybe_remake_depfiles'.
+	Minor unrelated refactoring.
+	* lib/am/configure.am: Adjust to account for the 'am__depfiles_maybe' ->
+	'am__maybe_remake_depfiles' renaming.
+	* lib/am/depend.am: Add rules to generate a dummy version of all the
+	dependency-tracking '.Po' and '.Plo' makefile fragments.
+	* m4/depout.m4: Use make invocations rather than Makefile-parsing sed hacks
+	to bootstrap the dependency-tracking '.Po' and '.Plo' makefile fragments.
+	We still use some sed trickery in order to remove the inclusion of the
+	still non existing .Po and .Plo files from the Makefile we invoke make
+	upon; this is done stripping lines that contain the magic string
+	"# am--include-marker".
+	* m4/make.m4 (AM_MAKE_INCLUDE): Given that now automake generates Makefiles
+	containing include statements with trailing comment, adjust the checks done
+	here to make sure $MAKE support that; e.g., "include foo.mk # comment"
+	rather than just "include foo.mk".
+	Also refactor and adjust to leave better debugging info in config.log.
+	* t/postproc.sh: Rename ...
+	* t/depend-postproc.sh: ... to this, and adjust and enhance.
+	* t/list-of-tests.mk (handwritten_TESTS): Adjust.
+	(XFAIL_TESTS): Remove 't/subobj-indir-pr13928.sh', which is now succeeding.
+	* t/subobj-indir-pr13928.sh: Simplify slightly, now that we expect it to
+	pass.
+	* t/depcomp8a.sh: Adjust grepping check to account for the changes in
+	the generated Makefile, and tp be somewhat more robust in light of possible
+	future modifications.
+	* t/depcomp8b.sh: Likewise.
+	* t/subobj11b.sh: Likewise.
+	* t/subobj11c.sh: Likewise.
+	* t/extra-sources.sh: Likewise.
+	* t/lex-depend-grep.sh: Likewise.
+	* t/lex-depend-cxx.sh: Add a command to help debugging in case of test
+	failure.
+
+	Helped-by: Johan Kristensen <johankristensen@gmail.com>
+
+2015-01-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	NEWS: fix a typo
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: update copyright years to 2015 (branch 'master')
+
+	* t/am-prog-mkdir-p.sh: Here.
+	* t/txinfo-no-split.sh: And here.
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  maint: update copyright years to 2015 (branch 'micro')
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'micro' into minor
+
+	* micro:
+	  maint: update copyright years to 2015 (branch 'micro')
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: update copyright years to 2015 (branch 'micro')
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  sync: update third-part files from upstream
+	  maint: fix typo in error message of a maintainer-only rule
+	  maint: bump version number 1.15 -> 1.15a ('minor' Git branch)
+	  release: stable minor release 1.15
+	  NEWS: minor improvements and fixed some typos and grammaros
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'micro' into minor
+
+	* micro:
+	  sync: update third-part files from upstream
+	  maint: fix typo in error message of a maintainer-only rule
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	sync: update third-part files from upstream
+
+	* lib/config.sub: This.
+	* lib/INSTALL, lib/config.guess, lib/gitlog-to-changelog, lib/gnupload,
+	lib/update-copyright: And this (but only for copyright year update, no
+	real semantic change)
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: fix typo in error message of a maintainer-only rule
+
+	* maintainer/maint.mk (web-manual-update): Here.
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: bump version number 1.15 -> 1.15a ('minor' Git branch)
+
+	* configure.ac (AC_INIT): Bump version number to 1.15a.
+	* m4/amversion.m4: Likewise (auto-updated by "make bootstrap").
+
+2015-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor' into micro after 1.15 release
+
+	And bump version number: 1.15 -> 1.15.0a
+
+	* minor:
+	  release: stable minor release 1.15
+	  NEWS: minor improvements and fixed some typos and grammaros
+	  docs: "make distcheck" implementation details are not to be abused
+	  NEWS: improve and adjust in light of the oncoming 1.15 release
+	  Fix dumb logic error preventing $install_sh from being be overridden
+	  Expose automake bug#19311
+	  build: fix race in parallel builds
+	  init: ensure $ac_aux_dir is defined before being used
+	  plans: enabling subdir-object by default is blocked on bug#13928
+	  maint: update copyright years
+	  maint: sync files from upstream ("make fetch")
+	  Typofixes in warning messages and manual
+	  NEWS: a typofix, and better word wrapping
+	  parallel-tests: avoid possible implicit "make all" in test-suite.log rule
+	  Allow user to extend .PRECIOUS target
+	  cosmetics: remove a couple of extra trailing white spaces
+	  tests: fix a spurious failure on Mac OS X
+	  docs: make clear the JAVA primary is frozen
+	  install-sh: a slightly better diagnostic, and tests enhancements
+	  install-sh: be stricter in catching invalid usages
+	  tests: more significant names for some tests
+	  tests: some cosmetic fixes
+	  tests: more significant names for a test
+	  docs: drop a few obsolescent FIXME/TODO comments, and associated text
+	  testsuite harness: report test exit status in log file
+	  TAP driver: no need to invoke AC_PROG_AWK directly
+	  TAP driver: remove perl implementation (move it into contrib/)
+	  NEWS: stop reporting "new" Automake versioning scheme
+	  cosmetics: untabify the install-sh script
+	  install-sh: assume that "set -f" and "set +f" work...
+	  install-sh: assume ${var:-value} works as expected
+	  install-sh: assume 'dirname' is available and working correctly
+	  post-release: micro version bump (1.14a)
+
 2014-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	release: stable minor release 1.15
@@ -8,6 +1195,15 @@
 2014-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	NEWS: minor improvements and fixed some typos and grammaros
+
+2014-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  docs: "make distcheck" implementation details are not to be abused
+	  NEWS: improve and adjust in light of the oncoming 1.15 release
+	  shell-no-trail-bslash: improve diagnostic in case of failure
 
 2014-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -39,6 +1235,16 @@
 
 2014-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branches 'texi-in-builddir-remove-distclean-hack' and 'minor'
+
+	* texi-in-builddir-remove-distclean-hack:
+	  texinfo: remove hack about info files in CLEANFILES variables
+
+	* minor:
+	  tests: make script 'shell-no-trail-bslash' simpler and more robust
+
+2014-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into minor
 
 	* micro:
@@ -57,6 +1263,54 @@
 
 	* t/ax/shell-no-trail-bslash.in: Simplify and fortify.
 	* t/self-check-shell-no-trail-bslash.sh: Enhance.
+
+2014-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	texinfo: remove hack about info files in CLEANFILES variables
+
+	Automake used to implement an undocumented hack causing '.info' files
+	that appeared to be cleaned (by e.g. being listed in the CLEANFILES
+	variable) to also be built in the builddir rather than in the srcdir;
+	this was for backward compatibility with packages such as Texinfo,
+	which did things like:
+
+	    info_TEXINFOS = texinfo.txi info-stnd.texi info.texi
+	    DISTCLEANFILES = texinfo texinfo-* info*.info*
+	    # Do not create info files for distribution.
+	    dist-info:
+
+	in order not to distribute .info files.
+
+	Now that we have the 'info-in-builddir' option that explicitly causes
+	generated '.info' files to be placed in the builddir, this hack is no
+	longer necessary, and we can remove it (after having deprecated it in
+	the Automake 1.14 release already).
+
+	* bin/automake.in (handle_texinfo_helper): Remove the hack.  Adjust
+	comments accordingly.
+	* NEWS: Update.
+	* t/txinfo23.sh: Delete as obsolete.
+	* t/txinfo25.sh: Likewise.
+	* t/txinfo24.sh: Likewise.
+	* t/txinfo28.sh: Delete as mostly obsolete, its only still relevant
+	parts moved ...
+	* t/mdate5.sh: ... into this test.
+	* t/txinfo-clean.sh: Remove references to deleted tests.
+	* t/list-of-tests.mk: Adjust.
+
+2014-12-27  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: avoid a possible failure due to autom4te cache staleness
+
+	* t/includes-deprecation.sh: Here.
+
+2014-12-27  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  tests: fix spurious failure in test on TEXINFO_TEX overriding
+	  tests: avoid some spurious failures on AIX 7.1
 
 2014-12-27  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -92,6 +1346,16 @@
 	* t/instmany-python.sh: And here.
 	* t/instmany.sh: And here.
 	* t/parallel-tests-concurrency.sh: And here.
+
+2014-12-23  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  dist: fix bug#18286 "distcheck fails to detect missing files"
+	  tests: expose automake bug#18286 "distcheck fails to detect missing files"
+	  include: fix bug in handling of user-defined makefile fragments generation
+	  tests: expose bug in handling of user-defined makefile fragments generation
 
 2014-12-23  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -205,6 +1469,19 @@
 	* t/am-include-only-one-generated-fragment.sh: Expose the bug (this test
 	is still XFAILing).
 	* t/list-of-tests.mk: Add the new test.
+
+2014-12-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  cleanup: refactor code to initialize DIST_COMMON
+	  dist: ordering of files in DIST_COMMON is deterministic now
+	  tests: refactor some tests on DIST_COMMON
+	  maint: make output of 'gen-testsuite-part' deterministic
+	  When computing lispdir, don't load emacs site wide init file.
+	  PATH: quote $(PATH_SEPARATOR) as well
+	  Improve detection of GNU make, avoiding "Arg list too long" errors.
 
 2014-12-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -336,6 +1613,17 @@
 
 2014-12-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'minor'
+
+	* minor:
+	  Fix stupid typo in test, causing spurious failure
+	  sync: update third-part files from upstream
+	  Make sure AM_INIT_AUTOMAKE has a trailing newline
+	  dist: adjust warning messages about shar and tarZ deprecation
+	  docs: improve description of ${PACKAGE}, ${VERSION}, and similar variables
+
+2014-12-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into minor
 
 	* micro:
@@ -418,6 +1706,17 @@
 	* doc/automake.texi: Adjust.
 	* THANKS: Update.
 
+2014-12-17  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  Fix dumb logic error preventing $install_sh from being be overridden
+	  Automake docs: fix typos and use of British English
+	  Expose automake bug#19311
+	  build: fix race in parallel builds
+	  build: fix race in parallel builds
+
 2014-12-17  Thomas Jahns  <jahns@dkrz.de>
 
 	Fix dumb logic error preventing $install_sh from being be overridden
@@ -471,6 +1770,13 @@
 
 2014-04-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'minor'
+
+	* minor:
+	  init: ensure $ac_aux_dir is defined before being used
+
+2014-04-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	init: ensure $ac_aux_dir is defined before being used
 
 	Since we use '$ac_aux_dir' to define '$am_aux_dir', we need
@@ -496,7 +1802,26 @@
 
 2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'minor'
+
+	* minor:
+	  plans: enabling subdir-object by default is blocked on bug#13928
+
+2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	plans: enabling subdir-object by default is blocked on bug#13928
+
+2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: update copyright (for files in 'master' only)
+
+2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  maint: update copyright years
+	  maint: sync files from upstream ("make fetch")
 
 2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -510,9 +1835,25 @@
 
 2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'minor'
+
+	* minor:
+	  Typofixes in warning messages and manual
+
+2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Typofixes in warning messages and manual
 
 	Fixes automake bug#16827 and bug#16997.
+
+2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  doc: fix encoding error with UTF-8 characters
+	  NEWS: a typofix, and better word wrapping
+	  parallel-tests: avoid possible implicit "make all" in test-suite.log rule
 
 2014-04-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -547,6 +1888,25 @@
 	can cause slowdowns for people implementing their extra "laziness
 	wrappers" around check-TESTS (automake bug#16302).
 	* NEWS: Update.
+
+2013-12-26  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  Allow user to extend .PRECIOUS target
+	  cosmetics: remove a couple of extra trailing white spaces
+	  tests: fix a spurious failure on Mac OS X
+	  docs: make clear the JAVA primary is frozen
+	  install-sh: a slightly better diagnostic, and tests enhancements
+	  install-sh: be stricter in catching invalid usages
+	  tests: more significant names for some tests
+	  tests: some cosmetic fixes
+	  tests: more significant names for a test
+	  docs: drop a few obsolescent FIXME/TODO comments, and associated text
+	  testsuite harness: report test exit status in log file
+	  TAP driver: no need to invoke AC_PROG_AWK directly
+	  TAP driver: remove perl implementation (move it into contrib/)
 
 2013-12-26  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -747,6 +2107,21 @@
 
 2013-12-24  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'minor'
+
+	* minor:
+	  NEWS: stop reporting "new" Automake versioning scheme
+	  post-release: micro version bump to 1.14.1a devel version
+	  release: stable micro release 1.14.1
+	  HACKING: minor clarification
+	  tests: make install-info-dir.sh print more debugging info
+	  tests: remove too-brittle test tap-realtime.sh
+	  maintainer: am-ft: add option to cater to clock skews
+	  sync: update INSTALL, config.guess and config.sub from upstream
+	  TAP driver: cosmetic fixes
+
+2013-12-24  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	NEWS: stop reporting "new" Automake versioning scheme
 
 	It's actually old news by now.
@@ -819,6 +2194,21 @@
 	* lib/tap-driver.sh: Quote 'like this', not `like this'.  Remove an
 	obsolete FIXME.  Correctly mark another comment as a TODO rather
 	than as a FIXME.
+
+2013-11-02  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  cosmetics: fix typo in a user-facing message in tests
+	  automake: account for perl hash order randomization
+	  tests: avoid use of intervals to capitalize letters
+	  cosmetics: untabify the install-sh script
+	  install-sh: assume that "set -f" and "set +f" work...
+	  install-sh: assume ${var:-value} works as expected
+	  install-sh: assume 'dirname' is available and working correctly
+	  distcheck: don't allow overriding of --prefix and --srcdir by the user
+	  tests: expose bug#14991 (relates to 'distcheck')
 
 2013-11-02  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -953,6 +2343,25 @@
 
 	* t/distcheck-no-prefix-or-srcdir-override.sh: New, expose the bug.
 	* t/list-of-tests.mk (handwritten_TESTS, XFAIL_TESTS): Add it.
+
+2013-10-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  tests: fix spurious failure when zip is present but unzip is not
+	  tests: fix spurious failure due to localization issues
+	  NEWS: update with the changes since v1.14
+	  docs: correct typos in the fix-timestamp.sh script
+	  python: byte-compile nobase_*_PYTHON files only once
+	  cosmetics: typofix in the 'missing' script
+	  test: avoid false positives in 'cc-no-c-o' script
+	  test harness: improve catching of usage errors in script 'test-driver'
+	  tests: fix a spurious failure on NetBSD-current
+	  am-ft: make the environment available earlier
+	  NEWS: post-release tweaks (for 1.14.x series)
+	  tests: avoid a spurious failure on MacOS X 10.6.8
+	  tests: don't risk hanging on the 'cl' requirement
 
 2013-10-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -1126,6 +2535,15 @@
 
 	* t/ax/am-test-lib.sh (require_tool): Adjust the handling of
 	the 'cl' requirement.
+
+2013-06-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'minor'
+
+	* minor:
+	  post-release: micro version bump (1.14a)
+	  post-release: micro version bump (1.14.0a)
+	  release: stable minor release 1.14
 
 2013-06-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -1309,6 +2727,27 @@
 
 2013-06-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: one more minor fixlet
+	  maint: port check-minimal-autoconf to VPATH builds
+	  tests: avoid spurious failures in Linux -> MinGW cross-compilation mode
+	  tests: simplify checks for some expected variables values in Makefiles
+	  NEWS: improve and update wording
+	  tests: fix/improve few heading comments
+	  coverage: new test on Texinfo @include support
+	  tests: tighten a grepping check
+	  tests: more significant names for some tests
+	  rename-tests: rework some code for clarity and safety
+	  tests: cosmetic changes in t/extra-sources.sh
+	  rename-tests: inform the user about the pre-filled commit msg
+	  typofix: in comments in 'maintainer/rename-tests'
+	  rename-tests: also "git add" list-of-tests.mk
+	  tests: rename t/exsource.sh -> t/extra-sources.sh
+
+2013-06-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	NEWS: one more minor fixlet
 
 2013-06-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
@@ -1418,6 +2857,13 @@
 
 2013-06-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  tests: some improvements to Gettext tests
+
+2013-06-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'gettext-tests' into maint
 
 	* gettext-tests:
@@ -1443,6 +2889,15 @@
 	* t/gettext3.sh: Rename ...
 	* t/gettext-intl-subdir.sh: ... like this, and add trailing
 	':' command.
+
+2013-06-14  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  post-release: micro version bump (1.13.4a)
+	  release: stable micro release 1.13.4
+	  sync: update config.guess
 
 2013-06-14  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -1474,6 +2929,20 @@
 	* lib/config.guess: This.  Actually, only the timestamp has been
 	updated (apparently, it was mistakenly not updated in the previous
 	real change to the script).
+
+2013-06-13  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  THANKS: update e-mall address for Ralf Corsepius
+	  lang, suffix rules: don't require C stuff needlessly
+	  tests: expose automake bug#14560
+	  maint: add a missing copyright notice
+	  sync: update config.guess from upstream
+	  tests: expose automake bug#13928
+	  comments: fix some out-of-sync refs to test scripts
+	  tests: expose automake bug#13940
 
 2013-06-12  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -1581,6 +3050,46 @@
 
 	* t/override-conditional-pr13940.sh: New test, still xfailing.
 	* t/list-of-tests.mk (XFAIL_TESTS, handwritten_TESTS): Add it.
+
+2013-06-03  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	fixup: botched merge for 'bin/automake.in'
+
+	* bin/automake.in (print_autodist_files): Here, we had unwittingly
+	botched up a 'format' invocation during the latest maint -> master
+	merge.
+
+2013-06-03  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  configure: remove an obsolete TODO comment
+	  post-release: micro version bump (1.13.3a)
+	  release: stable micro release 1.13.3
+	  typofix: fix grammaro in comments in t/tags-pr12372.sh
+	  NEWS: minor fixlets, re-wording, and better text wrapping
+	  tests: slightly stricter checks in t/cxx-demo.sh
+	  tests: fix spurious failure when 'etags' program is Exuberant Ctags
+	  tests: fix spurious failure due to missing sleeps
+	  maint: version bump after beta release 1.13b
+	  release: beta release 1.13b (will become 1.14)
+	  maint: support new Automake versioning scheme in tagging/uploading rules
+	  announcement: can be generated from development snapshots as well
+	  announcement: can be generated from development snapshots as well
+	  announcement: be less strict in the paring of NEWS
+	  maint: version bump after beta release 1.13.2b
+	  release: beta release 1.13.2b (will become 1.13.3)
+	  sync: update config.guess from upstream
+	  automake: assume we can always pass '-o' to the C compiler
+	  NEWS: document recent testsuite fixes (MinGW/MSYS related)
+	  depcomp: avoid trailing backslash in depfile for depmode=msvc7
+	  tests: prune some weed in a non-POSIX test
+	  tests: avoid a spurious failure on MSYS
+	  t/README: document "run_make", discourage "make -e"
+	  cosmetics: tiny whitespace fixlets
+	  tests: avoid a spurious failure with MSVC
+	  tests: avoid a spurious failure on non-POSIX systems
 
 2013-06-03  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -1830,6 +3339,13 @@
 	an empty line.
 	(scriptversion): Update.
 
+2013-05-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'fix-pr14499'
+
+	* fix-pr14499:
+	  tests: avoid a spurious failure when TeX is not installed.
+
 2013-05-29  Peter Rosin  <peda@lysator.liu.se>
 	    Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -1884,6 +3400,39 @@
 
 2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	tests: avoid a spurious failure when TeX is not installed.
+
+	Fixes automake bug#14499.
+
+	* t/txinfo-no-split.sh: If TeX is not available, redefine 'dvi' to be a
+	dummy target, so that "make distcheck" doesn't fail while trying to build
+	the DVI version of the Texinfo manual.
+
+2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: avoid a spurious failure when $CC != cc
+
+	Fixes automake bug#14500.
+
+	* t/subpkg.sh: Improve the grepping of configure output.
+
+2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: fix typos and grammaros
+	  NEWS: document fix for bug#14441
+	  Automake::Rule: consistently prepend underscore to private variables
+	  Automake::Rule: rename: suffix_rule() -> next_in_suffix_chain()
+	  Automake::Rule: adjust comments and POD according to previous changes
+	  Automake::Rule: make private variables lexically scoped
+	  suffix rules: better distinction between builtin and user-derived
+	  Automake::Rule: expose suffix rules as a function, not a scalar
+	  tests: expose automake bug#14441
+
+2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into maint
 
 	* micro:
@@ -1899,7 +3448,19 @@
 
 2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	NEWS: drop an idiomatic use of latinism 'sic'
+
+	Reported-by: Peter Rosin <peda@lysator.liu.se>
+
+2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	NEWS: fix typos and grammaros
+
+	Reported-by: Peter Rosin <peda@lysator.liu.se>
+
+2013-05-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	NEWS: fix Automake versions
 
 	Reported-by: Peter Rosin <peda@lysator.liu.se>
 
@@ -1919,9 +3480,32 @@
 
 2013-05-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: fix typo
+
+2013-05-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	NEWS: fix typo
 
 	Reported-by: Peter Rosin <peda@lysator.liu.se>
+
+2013-05-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: report recent documentation fix about AM_PROG_MKDIR_P
+	  NEWS: Automake 2.0 will assume "rm -f" without args work
+	  NEWS: on assuming "rm -f" without arguments work
+	  NEWS: fix a couple of typos in older entries
+	  docs: AM_PROG_MKDIR_P: will not be removed in 2.0 release of Automake
+	  docs: AM_PROG_CC_C_O: correct imprecise statements about it
+	  maint: sanity checks in 'check-minimal-autoconf' convenience target
+	  maint: test minimal supported autoconf through convenience target
+	  maint: install minimal supported autoconf through convenience targets
+	  test-lib: typofix in comments
 
 2013-05-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -2088,6 +3672,15 @@
 
 2013-05-26  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  tests: remove an "unworthy" FIXME comment
+	  tests: remove one obsolete workaround for long-lifted limitations
+	  tests: couple of minor tweaks in demo tests in C++ and Libtool
+
+2013-05-26  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	test-lib: typofix in comments
 
 	* t/ax/am-test-lib.sh: In here.
@@ -2118,6 +3711,28 @@
 	tests: couple of minor tweaks in demo tests in C++ and Libtool
 
 	* t/cxx-lt-demo.sh: Here.
+
+2013-05-26  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: document deprecation of 'shar' and 'compress' dist formats
+	  m4: rename minuso.m4 -> prog-cc-c-o.m4
+	  tests: adjust or remove some obsolete comments
+	  tests: remove some useless 'unset' of variables
+	  tests: avoid a couple of extra sleep with GNU make
+	  NEWS: document testsuite work for 1.13.3
+	  lint: remove a couple of obsolete syntax checks
+	  lint: cosmetics: use #-comments, not ##-comments
+	  lint: cosmetics: some reordering
+	  lint: recipes of syntax check require GNU grep; ensure it is used
+	  lint: better name for a syntax check
+	  tests: rename $am_make_rc_got -> $am_make_rc
+	  tests: some tests make no sense if "$CC -c -o" doesn't work
+	  AM_PROG_CC_C_O: don't rely on AC_PROG_CC_C_O, re-implement similar logic
+	  compile: rewrite AC_PROG_CC with AM_PROG_CC_C_O contents
+	  tests: ensure $required is not set too late
 
 2013-05-26  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -2429,6 +4044,14 @@
 
 2013-05-24  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  tests: use append mode to capture parallel make output
+	  tests: new convenience target 'check-parallel'
+
+2013-05-24  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into maint
 
 	* micro:
@@ -2485,6 +4108,19 @@
 	and more important with today multicore fast machines.
 
 	* Makefile.am (check-parallel): New .PHONY target.
+
+2013-05-23  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: avoid few lingering $MAKE redirections
+	  tests: avoid '$MAKE' redirections, use 'run_make' instead
+	  tests: avoid use of redirected 'run_make' invocations
+	  lint: warn against redirected 'run_make' invocations
+	  comments: next GNU make release 4.0, not 3.83
+	  tests: fix a potential spurious failure due to global config.site
+	  HACKING: it's OK to do testsuite refactoring in a micro version
 
 2013-05-23  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -2586,6 +4222,15 @@
 
 2013-05-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  tests: remove some code duplication
+	  cosmetics: remove a couple of extra whitespaces in tests
+	  tests: two minor fixups
+
+2013-05-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into maint
 
 	* micro:
@@ -2620,6 +4265,17 @@
 
 	* t/make-keepgoing.tap: Here.
 	* t/parallel-tests-exit-statuses.sh: And here.
+
+2013-05-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: run_make: options to do command redirection
+	  tests: only activate 'unset' alias if required
+	  tests: better idiom to override make macro defs on the cmdline
+	  test-lib: minor style changes
+	  test-lib: fix botched function name in an error message
 
 2013-05-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -2757,6 +4413,25 @@
 
 2013-05-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	automake: remove one extra trailing whitespace
+
+	* bin/automake.in (lang_vala_ignore): Here.
+
+2013-05-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	automake: cosmetic changes in indentation and line breaks
+
+	* bin/automake.in (handle_LIBOBJS_or_ALLOCA): Here.
+
+2013-05-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  maintcheck: minor tweaks and fixlets
+
+2013-05-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into maint
 
 	* micro:
@@ -2767,6 +4442,17 @@
 	maintcheck: minor tweaks and fixlets
 
 	* syntax-checks.mk: Here.
+
+2013-05-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: fix a spurious failure on NetBSD 5.1
+	  texi: build version.texi and stamp-vti in srcdir
+	  tests: fix a botched heading comment
+	  tests: fix another spurious with FreeBSD make
+	  tests: fix a spurious failure with FreeBSD make
 
 2013-05-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -2824,7 +4510,42 @@
 	Failures due to known VPATH support issues in that make implementation
 	(the same issues that have been causing the long-standing bug#7884).
 
+	* t/ltlibsrc.sh: Adjust.
+
+2013-05-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: fix a spurious failure with FreeBSD make
+
+	Failures due to known VPATH support issues in that make implementation
+	(the same issues that have been causing the long-standing bug#7884).
+
 	* t/lex-multiple.sh: Adjust.
+
+2013-05-18  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'subdir-objects-work'
+
+	* subdir-objects-work:
+	  depend: reduce code duplication, de-uglify make verbose output
+	  depend: prefer $(...) over `...` in Cygwin-specific recipes
+	  depend: reduce code duplication
+	  depend: a preparatory refactoring
+	  depend: refactor and remove code duplication
+	  Automake::Language: drop unused fields 'compile_flag' and 'output_flag'
+	  depend: assume '-c' compiler flag always means to produce object files
+	  depend: assume we can always pass '-o' to the C compiler
+	  cleanup: having subdir-objects mandatory allow us some simplifications
+	  subdir-objects: enable unconditionally
+
+2013-05-18  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  lisp: fix a failure with Solaris /usr/xpg4/bin/sh
+	  tests: sanitize 'unset' usages
+	  tests: fix some botched/outdated comments
+	  tests: use perl, not find+rm, to remove temporary directories
 
 2013-05-18  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -2950,6 +4671,48 @@
 
 2013-05-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	depend: reduce code duplication, de-uglify make verbose output
+
+	Verbose output from compilation recipes had been made more messy by
+	the previous "simplifying" commit v1.13.1d-220-g1fa0c24.  With this
+	patch, not only we reduce some code duplication, but also improve
+	that output again, for the joy of users who dislike silent-rules :-)
+
+	* lib/am/depend2.am: Use the new '%XSOURCE%' transform, instead of
+	copying and pasting the idiom for VPATH rewrite emulation over and
+	over.  Fix some indentation and line-wrapping issues while at it.
+	* bin/automake.in (handle_languages): Implement the new transform.
+	* t/silent-nested-vars.sh: Adjust to avoid spurious failures.
+
+2013-05-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: remove remaining exec bits ('master' branch)
+
+	The executable bit gives the impression that the tests are directly
+	runnable, as with "./t/foo.sh", but it has been a while since that
+	was the case.  Today, tests are runnable only through "make check"
+	or "./runtest".
+
+	This change is for the 'master' branch (automake 1.99a), and is a
+	follow-up to commit 'v1.13.2-3-g74017b5', done on the 'micro' branch
+	(automake 1.13.2a) and to commit 'v1.13.2-221-g0985d67', done on the
+	'maint' branch (automake 1.13a).
+
+	* t/am-prog-mkdir-p.sh: Remove executable bit.
+	* t/txinfo-no-split.sh: Likewise.
+
+2013-05-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: remove remaining exec bits ('maint' branch)
+	  tests: remove exec bit from all of them ('micro' branch)
+	  maint: tests no longer need to have executable bit set
+	  PLANS: subdir-objects: various updates
+
+2013-05-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	tests: remove remaining exec bits ('maint' branch)
 
 	The executable bit gives the impression that the tests are directly
@@ -3019,6 +4782,22 @@
 
 2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  post-release: micro version bump (1.13.2a)
+	  release: stable micro release 1.13.2
+	  vala tests: skip in a cross compiler setup
+	  HACKING: miscellaneous fixes, updates and enhancements
+	  NEWS: minor improvements to wording (about new versioning scheme)
+	  THANKS: update Akim's e-mail address
+	  tests: less uses of "make -e"; avoid spurious failures in 'check-cc-no-c-o'
+	  build: be more respectful of user-specified verbosity
+	  check-cc-no-c-o: unify initializations in a single place
+	  check-cc-no-c-o: avoid a spurious failure
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'micro' into maint
 
 	* micro:
@@ -3070,6 +4849,202 @@
 
 2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	depend: prefer $(...) over `...` in Cygwin-specific recipes
+
+	On Cygwin, we can happily assume only POSIX-conforming shells exist.
+	This commit is useless by itself, but is useful as a preparatory
+	refactoring in view of a future change.
+
+	* lib/am/depend2.am: In recipes for producing '.obj' objects, use
+	the POSIX form $(...) for command substitution, rather than the
+	classic Bourne one `...`.
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	depend: reduce code duplication
+
+	Just a simplification; no semantic change is intended.
+
+	* lib/am/depend2.am (am__set_depbase): New.  Use it in all the three
+	flavours of recipes (.o, .obj, .lo), instead of duplicating its code.
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	depend: a preparatory refactoring
+
+	This is just a preparatory change in view of a future refactoring.
+	No semantic change is intended.
+
+	* lib/am/depend2.am: Adjust; for example, using '$@' in all recipes
+	to indicate the output file (rather than recipe-specific transforms
+	like '%OBJ%' and '%LTOBJ%'), and not assuming to know the exact
+	file extension of the output file (e.g., whether it's '.o' or '.lo').
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	depend: refactor and remove code duplication
+
+	* lib/am/depend2.am: Here.  The obsolescent comments removed from this
+	same file in commit 'v1.13.1-42-g8f06bfb' of 2012-01-09, "depend2.am: fix
+	comments on verbosity of compilation rules", gave the rationale for why
+	that code duplication was there in the first place (rationale that, like
+	those comments, has been obsolete by the silent-rules introduction).
+	* bin/automake.in: Given the refactoring in 'depend2.am', there is no
+	longer need to add extra trailing whitespace to the entries of the
+	'%sourceflags' hash (which are used for the '%SOURCEFLAG%' transform
+	when 'depend2.am' is processed.
+	* t/fort2.sh: Adjust to avoid spurious failures.
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Automake::Language: drop unused fields 'compile_flag' and 'output_flag'
+
+	They are unused after the recent flurry of changes.  This is just a
+	simplification; no semantic change is intended.
+
+	* lib/Automake/Language.pm (Class::Struct): Remove unused fields here.
+	* bin/automake.in: And here, in all the 'register_language()' invocations.
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	depend: assume '-c' compiler flag always means to produce object files
+
+	Rather than fully-fledged executables.  This is the case for all the
+	compilers of all languages supported by Automake.
+
+	This is just a simplification; no semantic changes are intended.
+
+	* bin/automake.in (handle_languages): Drop transform '%-c%'.
+	* lib/am/depend2.am: Adjust to just assume the '%-c%' transform
+	expands to "-c".
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	depend: assume we can always pass '-o' to the C compiler
+
+	This is the case after the change in commit v1.13.1-56-g34001a9 of
+	2013-01-09 (compile: use 'compile' script when "-c -o" is used with
+	losing compilers).
+
+	This is just a simplification; no semantic changes are intended.
+
+	* bin/automake.in (handle_languages): Drop transform '%-o%', and
+	definitions of '$output_flag'.
+	* lib/am/depend2.am: Adjust to just assume the '?-o?' transform is
+	true, and the '%-o%' transform expands to "-o".
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	cleanup: having subdir-objects mandatory allow us some simplifications
+
+	Few minor cleanups made possible by earlier changes, plus other minor
+	cleanups triggered in cascade.  No semantic change is intended.
+
+	This is a follow-up on previous commit 'v1.13.1d-214-g3ad07d2', and
+	an adjusted backport of Automake-NG commit 'v1.12.1-315-gc97d41b'
+	of 2012-06-08 ([ng] cleanup: after enabling of subdir-objects
+	unconditionally).
+
+	* bin/automake.in (LANG_IGNORE, LANG_SUBDIR): Remove.
+	(handle_languages): Drop the '%DEPBASE%' transform when processing
+	the '$rule_file'.
+	(register_language ('name' => 'vala', ...)): Add '.vapi' to the entry
+	'extensions', and simplify the entry 'output_extensions' to point to
+	a dummy subroutine (since it wasn't really used anyway).
+	(handle_single_transform): No longer expect the 'lang_*_rewrite'
+	subroutines to return a 'LANG_*' constant, but only a transformed
+	extension, if required.  To decide whether further processing of the
+	source file should be stopped, rely on a new set of 'lang_*_ignore'
+	subroutines, defaulting to a subroutine that returns false.
+	Accordingly, don't special case the handling of '.vapi' files anymore,
+	instead rely on ...
+	(lang_vala_ignore, lang_header_ignore): ... these new subroutines to
+	avoid extra processing of C/C++ headers and Vala '.vapi' headers.
+	(lang_java_rewrite): Remove.
+	Remove an outdated comment.
+	* lib/am/depend2.am: Partial rewrite to reduce code duplication and
+	drop use of the '%DEPBASE%' transform.
+	* t/compile_f_c_cxx.sh: Adjust.
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	subdir-objects: enable unconditionally
+
+	See automake bug#13378.
+
+	The fact that Automake-generated Makefiles places compiled object files
+	in the current directory by default, also when the corresponding source
+	file is in a subdirectory, is basically an historical accident, due to
+	the fact that the 'subdir-objects' option had only been introduced in
+	April 1999, starting with commit 'user-dep-gen-branchpoint-56-g88b5959',
+	and never made the default, likely to avoid backwards-compatibility
+	issues.
+
+	Since we believe the behaviour enabled by the 'subdir-objects' is the
+	only natural and most useful one, we make it the only only one available,
+	simplifying the Automake implementation and APIs a little in the process.
+
+	This change is basically an adjusted backport of Automake-NG commit
+	'v1.12.1-313-g14fe163' of 2012-06-07, "[ng] subdir-objects: enable
+	unconditionally".
+
+	* NEWS: Update.
+	* doc/automake.texi (Program and Library Variables): The output
+	object files are no longer placed in the current directory by
+	default, but rather in the same directory of the source file.
+	(LIBOBJS): Now the $(LIBOBJS) and $(ALLOCA) variables can also
+	be used outside of the directory where their sources lie.
+	(List of Automake options): Report the 'subdir-objects' option
+	as a no-op, existing only for compatibility with older versions
+	of Automake.
+	Other related minor adjustments.
+	* bin/automake.in (LANG_PROCESS): Remove, it's no longer needed.
+	(handle_languages): Don't test whether option 'subdir-objects'
+	is set (just assume it is), and do not use the '%SUBDIROBJ%'
+	transform when processing '.am' fragments.
+	(lang_sub_obj): Delete, it would just return 'LANG_SUBDIR'
+	unconditionally now.
+	(lang_lex_rewrite): Adjust.  Don't test whether the option
+	'subdir-objects' is set (just assume it is).
+	(lang_yacc_rewrite): Likewise.
+	(handle_single_transform): Likewise.  Remove an obsolete
+	comment.  Add a proper "FIXME" comments about a fragment
+	of code that might have become dead code now.
+	(handle_LIBOBJS_or_ALLOCA): Simplify assuming that the option
+	'subdir-objects' is always set.  Accordingly, there's no need
+	to warn anymore if '$(LIBOBJS)' or '$(ALLOCA)' are used outside
+	the '$config_libobj_dir' directory (as specified by autoconf
+	macro 'AC_CONFIG_LIBOBJ_DIR').
+	* lib/am/depend2.am: Assume the '?SUBDIROBJ?' Automake time
+	conditional is always true, and remove its uses accordingly.
+	* t/compile_f_c_cxx.sh: Adjust.
+	* t/cscope.tap: Likewise.
+	* t/depcomp8a.sh: Likewise.
+	* t/depcomp8b.sh: Likewise.
+	* t/libtool3.sh: Likewise.
+	* t/ltlibsrc.sh: Likewise.
+	* t/pr401.sh: Likewise.
+	* t/pr401b.sh: Likewise.
+	* t/pr401c.sh: Likewise.
+	* t/subobj.sh: Likewise.
+	* t/lex-line.sh: Likewise.
+	* t/yacc-line.sh: Likewise.
+	* t/yacc5.sh: Likewise.
+	* t/vala-libs.sh: Likewise.
+	* t/fort4.sh: Likewise, and extend a bit.
+	* t/fort5.sh: Likewise.
+	* t/gcj.sh: Likewise.
+	* t/subpkg.sh: Likewise.
+	* t/subpkg-yacc.sh: Likewise.
+	* t/xsource.sh: Likewise.
+	* t/libobj20a.sh: Remove as obsolete.
+	* t/libobj20b.sh: Adjust heading comments.
+	* t/libobj20c.sh: Likewise.
+	* t/subobj4.sh: Remove as obsolete.
+	* t/sourcefile-in-subdir.sh: Likewise.
+
+2013-05-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	tests: less uses of "make -e"; avoid spurious failures in 'check-cc-no-c-o'
 
 	That is, when the testsuite is run using a fake C compiler that doesn't
@@ -3110,11 +5085,27 @@
 
 2013-05-14  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  build: fixup for building in a VPATH setup
+
+2013-05-14  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	build: fixup for building in a VPATH setup
 
 	* bin/Makefile.inc (%D%/automake, %D%/aclocal): Make sure that the
 	directory where the targets scripts are going to be built exists,
 	before trying to create said scripts.
+
+2013-05-13  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  Use AC_DEFUN_ONCE to define AM_PROG_CC_C_O
+	  compile: avoid AC_PROG_CC messy rewrite
+	  options: tiny simplification in dealing with incompatible versions
 
 2013-05-11  Nick Bowler  <nbowler@elliptictech.com>  (tiny change)
 
@@ -3172,6 +5163,33 @@
 	Ideally, this change should have been folded into the similar
 	commit 'v1.13.1d-129-gf7ef16f', but we noticed that too late.
 	Oh well.
+
+2013-05-11  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	options: consistently use return statuses to report errors (more)
+
+	This is a follow-up to commit 'v1.13.1d-128-g6e486c5', needed to deal
+	with errors that are only present in the 'master' branch (while the
+	reported commit was on the 'maint' branch).
+
+	* lib/Automake/Options.pm (_process_option_list): Adjust, where dealing
+	with the removed options 'dist-shar' and 'dist-tarZ'.
+
+2013-05-11  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  options: try to report as much errors as possible
+	  warns: don't tell AM_PROG_MKDIR_P is going to be removed
+	  refactor: fix few "inverted boolean" usages
+	  options: better name for an internal function
+	  options: more consistency in use of return statuses to report errors
+	  options: tiny simplification in dealing with erroneous opts
+	  options: consistently use return statuses to report errors
+	  options: re-enable some sanity checks
+	  THANKS: update Eric Blake's e-mail address
+	  NEWS: typofix
 
 2013-05-11  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -3273,6 +5291,39 @@
 
 2013-05-10  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	dist: remove support for shar and tarZ formats
+
+	See also discussion about automake wishlist bug#13324.
+
+	* lib/Automake/Options.pm: Give fatal errors (rather than warnings) if
+	the 'dist-shar' or 'dist-tarZ' options are used.
+	* lib/distdir.am: Remove the 'dist-tarZ' and 'dist-shar' targets, and
+	references to the '.tar.Z' and '.shar' archives.
+	* bin/automake.in (preprocess_file): Remove 'COMPRESS' and 'SHAR'
+	transforms.
+	(handle_dist): Remove lingering references to 'dist-tarZ' and 'dist-shar'
+	options.
+	* doc/automake.texi: Adjust, removing references to the removed targets
+	and distribution formats.
+	* t/dist-shar.sh: Adjust to expect fatal errors rather than warnings.
+	* t/dist-tarZ.sh: Likewise.
+
+2013-05-10  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  news: document new 'subdir-objects' warning
+	  PLANS: one minor fixlet (mostly cosmetic)
+	  PLANS: we have already dropped support for split info files in master
+	  NEWS: fix a reference to Automake 1.14 where Automake 2.0 was intended
+	  PLANS: fix reference to non-existent 'next' branch
+	  PLANS: fix botched version reference
+	  maintcheck: fix two references to old location of aclocal and automake
+	  dist: deprecated shar and tar+compress formats
+
+2013-05-10  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	news: document new 'subdir-objects' warning
 
 	* NEWS: Automake 1.14 will warn if a subdir source file is
@@ -3334,6 +5385,25 @@
 	sync with the new tests.
 	* t/dist-formats.tap: Remove references to deprecated formats.
 	* t/list-of-tests.mk: Adjust.
+
+2013-05-10  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  automake: typofix in comments: s/AC_CONFIG_HEADER/AC_CONFIG_HEADERS/
+	  am: prefer a shorter idiom where possible
+	  cosmetics: fix few typos, grammaros and missing whitespace
+	  fixup: remove an obsolete comment
+	  docs: we still don't have the promised better Java interface
+	  build: move automake and aclocal in 'bin' subdir
+	  build: break up monolithic Makefile.am in subdir-specific fragments
+
+	+ Extra non-trivial edits:
+
+	* m4/Makefile.inc (dist_automake_ac_DATA): Drop lead-dot.m4 and
+	mkdirp.m4.
+	* lib/Automake/Makefile.inc (dist_perllib_DATA): Drop Configure_ac.pm.
 
 2013-05-10  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -3405,10 +5475,25 @@
 
 2013-05-09  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  maint: re-run "make update-copyright" ...
+
+2013-05-09  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	maint: re-run "make update-copyright" ...
 
 	* t/lex-multiple.sh: ... which updates the copyright years
 	of this test (they were somehow not bumped in the past).
+
+2013-05-09  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: avoid spurious failure with older flex (2.5.4)
+	  announcement: cater to more flexible NEWS format
 
 2013-05-09  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -3475,6 +5560,51 @@
 	* contrib/t/local.am: Rename ...
 	* contrib/t/Makefile.inc: ... like this.
 
+2013-05-06  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	docs: fix warnings given by Texinfo 5.x
+
+	These warnings:
+
+	  doc/automake.texi:3885: warning: node next `Public Macros' in menu \
+	    `Private Macros' and in sectioning `Obsolete Macros' differ
+	  doc/automake.texi:4050: warning: node `Private Macros' is next for \
+	    `Obsolete Macros' in sectioning but not in menu
+	  doc/automake.texi:4050: warning: node prev `Obsolete Macros' in menu \
+	    `Private Macros' and in sectioning `Public Macros' differ
+	  doc/automake.texi:4090: warning: node `Obsolete Macros' is next for \
+	    `Private Macros' in menu but not in sectioning
+	  doc/automake.texi:4090: warning: node prev `Private Macros' in menu \
+	    `Public Macros' and in sectioning `Obsolete Macros' differ
+
+	* doc/automake.texi: Adjust.
+
+2013-05-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	fixlet: remove leftover comment fragment
+
+	* configure.ac: Here.
+
+2013-05-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	master branch: we are going to become Automake 2.0
+
+	* configure.ac (AC_INIT): So adjust the beta version in here, from
+	1.13a to 1.99a.
+	* m4/amversion.m4: Regenerate.
+
+2013-05-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  maint branch: we are going to become Automake 1.14
+	  maint: version bump after beta release 1.13.1d
+	  release: beta release 1.13.1d (will become 1.13.2)
+	  NEWS: document more robust handling/recognition of make options
+	  tests: typofixes in comments in t/preproc-c-compile.sh
+	  tests: remove bashism from a test
+
 2013-05-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	maint branch: we are going to become Automake 1.14
@@ -3520,6 +5650,34 @@
 
 	* t/preproc-c-compile.sh (Makefile.am): Use "test foo = bar", not the
 	bash-specific "test foo == bar".
+
+2013-05-04  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  maint: targets and recipes to simplify testing on real-world packages
+	  build: preparatory refactoring
+	  build: tiny reduction in code duplication
+	  make flags analysis: handle more options with args
+	  make flags analysis: use simpler variable names
+	  make flags analysis: whitespace changes
+	  make flags analysis: embed in a subshell
+	  make flags analysis: be more robust
+	  make flags analysis: cater to GNU make 3.83 (still unreleased as of now)
+	  tests: expose weaknesses in make flags analysis
+	  tests: improve debugging output in checks on make flags analysis
+	  make flags analysis: refactor, to reduce code duplication
+	  tests: avoid one tricky use of "make -e"
+	  cosmetics: remove few trailing whitespace occurrences
+	  typofix: in NEWS (extra whitespace)
+	  tests: avoid a spurious error with Solaris make
+	  subdirs: don't return false positives for the '-k' option's presence
+	  header-vars: recognize more make flags ('-k' in particular)
+	  header-vars: simplify how make flags are determined
+	  tests: remove dead code from t/make-dryrun.tap
+	  header-vars: new variable $(am__running_with_option)
+	  tests: expose bug#12554 (false positives for presence of '-k' make option)
 
 2013-05-04  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -3756,6 +5914,60 @@
 2013-04-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	typofix: in NEWS (extra whitespace)
+
+2013-04-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	compat: substitute '@mkdir_p@' as '$(MKDIR_P)' unconditionally
+
+	We had started to do so only when the obsolete AM_PROG_MKDIR_P variable
+	was used, but that has recently turned out not to be not good enough,
+	because Gettext 0.18.2 (the latest one at the moment of writing) is using
+	the modern macro AC_PROG_MKDIR_P in its '*.m4' files, but at the same time
+	is still using the obsolete make variable '$(mkdir_p)' in its Makefile
+	fragments.  This has been causing failures in real-world packages
+	bootstrapped with latest Gettext (0.18.2) and with bleeding-edge automake.
+
+	See for example:
+
+	  <http://lists.gnu.org/archive/html/bug-tar/2013-04/msg00009.html>
+
+	And the worst things is that those failures have been basically silent
+	and unnoticeable up until the final "make install" --- that is, after
+	the affected package had been bootstrapped, configured and built.  Yikes!
+
+	This issue has been reported to the Gettext developers:
+
+	  <http://lists.gnu.org/archive/html/bug-gettext/2013-04/msg00044.html>
+
+	But even if they will quickly fix it, Gettext 0.18.2 will remain
+	affected.
+
+	The fix we can implement in Automake is small and unobtrusive enough,
+	definitely worth having in order to save the users and developers from
+	having to deal with this hard-to-spot issue.
+
+	* m4/init.m4 (AM_INIT_AUTOMAKE): AC_SUBST '@mkdir_p@' to '$(MKDIR_P)'.
+	* t/am-prog-mkdir-p.sh: Enhance.
+
+2013-04-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  sync: update files from upstream with "make fetch"
+	  maintcheck: remove outdated whitelisting
+	  tar: format 'ustar' cannot support UID/GID longer than 21 bits
+	  docs: issues with configure substitutions in TESTS
+	  tests: avoid possible autotools caching issues (automake bug#13832)
+	  tests: rename some with more descriptive names
+	  docs: add myself and Ralf Wildenhues as authors
+	  authors: add myself
+	  dry-run: don't get confused by '-I' option
+	  tests: avoid a spurious failure with the Korn Shell
+	  dry-run: with GNU make, prefer $(MFLAGS) over $(MAKEFLAGS)
+	  header vars: can determine whether we are running under GNU make
+	  NEWS: improve wording for automake bug#13514 fix
+	  NEWS: document fix for automake bug#13514
 
 2013-04-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -4113,6 +6325,17 @@
 
 2013-04-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  INSTALL: regen
+	  sync: update files from upstream with "make fetch"
+	  tests: tweaks and minimal improvements to t/insthook.sh
+	  typofix: in comments in t/extra2.sh
+	  tests: fix botched cross-reference in a heading comment
+
+2013-04-20  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'branch-1.13.2' into maint
 
 	* branch-1.13.2:
@@ -4154,6 +6377,42 @@
 
 2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	compat: reinstate support for obsolete $(INCLUDES) variable
+
+	Since INCLUDES and AM_CPPFLAGS can be both used at the same time in a
+	single project, and interact in a non-obvious way, switching away from
+	INCLUDES is, unfortunately, not simply a matter of doing a mindless
+	INCLUDES -> AM_CPPFLAGS substitution.  In fact, the transition from a
+	"INCLUDES + CPPFLAGS" setup to a "AM_CPPFLAGS only" setup could cause
+	subtle bugs to sneak into the build systems of the client packages
+	doing the transition.  Forcing this risk upon our users is definitely
+	not worth the small enhancement in consistency and cleanliness that
+	the removal of INCLUDES would give us.
+
+	For a more extended rationale and related discussions, see:
+	<http://lists.gnu.org/archive/html/automake/2013-02/msg00001.html>
+
+	This change basically reverts commit v1.13-8-g880595d.
+
+	* automake.in: Re-introduce support for INCLUDES (its use will cause
+	warnings in the 'obsolete' category rather than fatal errors).
+	* doc/automake.texi: Adjust to re-add mention of INCLUDES.
+	* t/includes-no-more.sh: Rename ...
+	* t/includes-deprecation.sh: ... like this, and adjust.
+	* t/list-of-tests.mk: Update.
+	* t/warnopts.sh: Minor fixlet while at it.
+
+	Suggested-by: Peter Rosin <peda@lysator.liu.se>
+
+2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  automake: refactoring: factor out common cpp-like flags
+
+2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	automake: refactoring: factor out common cpp-like flags
 
 	* automake.in (@cpplike_flags): In this new variable...
@@ -4167,10 +6426,35 @@
 
 2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS (mint): reflect new Automake versioning scheme
+
+2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	NEWS (mint): reflect new Automake versioning scheme
 
 	The next minor Automake version will be 1.14, and *not* 1.13.2 -- that
 	will be the next bug-fixing version.
+
+2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	NEWS (master): reflect new Automake versioning scheme
+
+	The next minor Automake version will be 1.14 (not 1.13.2 -- that will
+	be the next bug-fixing version).  And the next major Automake version
+	will be 2.0.
+
+2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  Add missing '$' for variable expansion in depout.m4
+	  maintcheck: avoid spurious failure
+	  perl: perl subroutine prototypes are problematic, don't use them
+	  fixup: one stray reference to older versioning scheme
 
 2013-04-19  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -4292,6 +6576,14 @@
 
 2013-03-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  preproc: enhance and extend tests
+	  preproc: add support for relative names in included fragments
+
+2013-03-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'preproc' into maint
 
 	* preproc:
@@ -4304,6 +6596,19 @@
 
 	* lib/Automake/Options.pm: Here, in a FIXME comment: reference
 	"Automake 3.0" rather than "Automake 1.15".
+
+2013-02-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint' into master
+
+	* maint:
+	  maint: more adjustments to the new versioning scheme
+	  aclocal: fix for more-than-once specified directories
+	  aclocal: just warn if the primary local m4 dir doesn't exist (don't error)
+	  coverage: expose automake bug#13760
+	  tests: refactor/enhance tests about make dry-run mode
+	  maint: describe new versioning and branching scheme, and adjust to it
+	  cosmetics: fix some "docstring-like" comments in automake
 
 2013-02-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -4477,6 +6782,16 @@
 
 2013-02-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  style: call perl functions 'like_this()', not '&like_this()'
+	  maint: use more perl subroutines prototypes in the automake script
+	  build: auto-generate perl subroutines prototypes for automake and aclocal
+	  refactor: rip module Automake::Language out of automake script
+
+2013-02-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'perl-sub-protos' into maint
 
 	* perl-sub-protos:
@@ -4484,6 +6799,19 @@
 	  maint: use more perl subroutines prototypes in the automake script
 	  build: auto-generate perl subroutines prototypes for automake and aclocal
 	  refactor: rip module Automake::Language out of automake script
+
+2013-02-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  typofix: in comments in 't/ax/test-lib.sh'
+	  tests on TAP: don't run the driver with perl unconditionally
+	  typofix: in comments in 'automake.in'
+	  tests: remove obsolete (and now wrong) comment
+	  typofix: in diagnostic in test 't/tap-realtime.sh'
+	  automake: fix reference to relevant tests in comments
+	  NEWS: we no longer plan to drop $(INCLUDES) support in next major version
 
 2013-02-15  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -4645,6 +6973,44 @@
 
 2013-01-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	NEWS: IRIX is still supported; only SGI depmode no longer is
+
+	This change is for the master branch (see the similar commit
+	'v1.13.1b-3-g97f04a5' on the maint branch).
+
+	The only IRIX-specific support that is actually removed in master (and
+	thus in the next major Automake version) is the depcomp support for the
+	SGI compiler.  That means that automatic dependency tracking will no
+	longer work with that compiler, but "normal" compilation should still
+	work, at least until the compiler is supported by Autoconf.
+
+	So there is no point in alarming our users by stating in the NEWS file
+	that "support for IRIX and the SGI compilers has been removed"; after
+	all, while we don't test on nor particularly care about IRIX anymore,
+	that doesn't mean we are deliberately breaking it, and the likelihood
+	of an intended breakage there is very low.
+
+	See:
+	<http://lists.gnu.org/archive/html/automake-patches/2013-01/msg00164.html>
+	<http://lists.gnu.org/archive/html/automake-patches/2013-01/msg00165.html>
+
+	* NEWS: Adjust.  Improve explanation of our rationale for dropping
+	support for the SGI compilers.
+
+	Suggested-by: Peter Rosin <peda@lysator.liu.se>
+
+2013-01-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: IRIX is still supported; only SGI C compiler depcomp no longer is
+	  maint: version bump after beta release 1.13.1b
+	  NEWS: typofix
+	  release: beta release 1.13.1b (will become 1.13.2)
+
+2013-01-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	Merge branch 'branch-1.13.2' into maint
 
 	* branch-1.13.2:
@@ -4683,6 +7049,14 @@
 
 2013-01-23  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	coverage: split info files are not installed nor distributed
+
+	See automake bugs #12320 and #13351.
+
+	* t/txinfo-no-extra-dist.sh: Enhance.
+
+2013-01-23  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	maint: version bump after beta release 1.13.1b
 
 	* configure.ac (AC_INIT): Bump version number to 1.13.1c.
@@ -4698,6 +7072,21 @@
 
 	* configure.ac (AC_INIT): Bump version number to 1.13.1b.
 	* m4/amversion.m4: Likewise (auto-updated by "make bootstrap").
+
+2013-01-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  docs: '.txi' and '.texinfo' extensions are deprecated
+	  NEWS: document recent documentation improvements
+	  docs: more precise cross reference
+	  docs: 'dist-shar' and 'dist-tarZ' are obsolescent today
+	  docs: improve documentation of 'dist-*' targets slightly
+	  docs: make even clearer 'dist-gzip' is the default.
+	  docs: document 'dist-xz' together with the other 'dist-*' options
+	  docs: 'no-define' option and AM_INIT_AUTOMAKE three-args usage: fixlets
+	  warn: correct broken hyperlink in warning message
 
 2013-01-22  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -4790,6 +7179,26 @@
 	is detected.
 
 	Fixes automake bug#13519.
+
+2013-01-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: more information about Lex and Yacc programs
+	  lint: fix spurious failure for 'sc_rm_minus_f' syntax check
+	  maint: bump version 1.13.1a -> 1.13.2a
+	  maint: update copyright in files generated by automake and aclocal
+	  tests: avoid a spurious failure when running inside Emacs
+	  tests: make two new test executable
+	  m4: rename an m4 file to a more appropriate name
+	  NEWS: update w.r.t. recent documentation fixes
+	  compat: reinstate AM_CONFIG_HEADER and AM_PROG_CC_STDC
+	  docs: parallel-tests is no longer experimental
+	  docs: serial-tests are not deprecated, just discouraged
+	  plans: we are not going to remove AM_PROG_MKDIR_P in Automake 1.14
+	  NEWS: we are not going to remove AM_PROG_MKDIR_P in Automake 1.14
+	  init.m4: add probe to check "rm -f" without args work
 
 2013-01-21  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -4955,6 +7364,13 @@
 
 2013-01-18  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	NEWS (master): we are not going to remove AM_PROG_MKDIR_P in 1.14
+
+	See commit v1.13.1-109-g030ecb4 of 2013-01-16, "compat: restore
+	AM_PROG_MKDIR, again", for the rationale.
+
+2013-01-18  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	plans: we are not going to remove AM_PROG_MKDIR_P in Automake 1.14
 
 	See commit v1.13.1-109-g030ecb4 of 2013-01-16, "compat: restore
@@ -4969,6 +7385,76 @@
 
 	See commit v1.13.1-109-g030ecb4 of 2013-01-16, "compat: restore
 	AM_PROG_MKDIR, again", for the rationale.
+
+2013-01-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'texi-no-split-info'
+
+	* texi-no-split-info:
+	  texi: no longer support split info files
+
+2013-01-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  subdir-objects: complain if it isn't enabled
+	  plans: update w.r.t. latest changes
+
+2013-01-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	compat: restore AM_PROG_MKDIR, again
+
+	OK, this is getting ridiculous, but we cannot remove this macro yet
+	(and, yes, the fault for this mess lies entirely on me; let's not
+	dwell on that, thank you very much).
+
+	Gettext (so far the greatest "offender" in the use of AM_PROG_MKDIR), in
+	its latest release 0.18.2, has removed all the uses of that macro still
+	present in its code base.  So I thought we could finally and safely
+	remove it.  Wrong.  If a package's 'configure.ac' contains a call like:
+
+	   AM_GNU_GETTEXT_VERSION([0.18])
+
+	then the 'autopoint' script will bring the data files from the Gettext
+	release *1.18* into the package's tree -- yes, even even if the developer
+	has installed *and is using* Gettext 1.18.2!  Now, these data files
+	comprise m4 files (that will be seen by subsequent aclocal and autoconf
+	calls), and of course, the pre-0.18.2 version of some of these files
+	still contains occurrences of AM_PROG_MKDIR_P -- so Automake 1.13 errors
+	out, and we lose.  This has already happened in practice:
+
+	  <http://lists.gnu.org/archive/html/bug-grep/2013-01/msg00003.html>
+
+	Moreover, while we might see it as not unreasonable to ask a developer
+	using Automake 1.14 to also update Gettext to 1.18.2, that would not
+	be enough; in order for gettext to use the correct data files, our
+	developer would have to update his configure.ac to read:
+
+	   AM_GNU_GETTEXT_VERSION([0.18.2])
+
+	thus requiring *all* of his co-developers to install Gettext 1.18.2,
+	even if they are still using, say, Automake 1.13.  Bad.
+
+	So we re-instate this macro as a simple alias for AC_PROG_MKDIR (plus
+	a non-fatal runtime warning in the 'obsolete' category), and drop any
+	plan to remove it (see how much good those plans have done us so far).
+
+	Note that NEWS is not yet adjusted, since we'll have to adjust it in
+	maint before (to minimize spurious merge conflicts).
+
+	* doc/automake.texi: Update.
+	* PLANS/obsolete-removed/am-prog-mkdir-p.txt: Likewise.
+	* t/gettext-macros.sh: Adjust.
+	* t/am-prog-mkdir-p.sh: New test.
+	* t/mkdir_p.sh: Remove, folded into the new one.
+	* t/am-prog-mkdir-p-no-more: Remove as superseded.
+	* t/list-of-tests.mk: Adjust.
+	* t/obsolete-err.m4: Re-instate AM_PROG_MKDIR_P as a working
+	alias for AC_PROG_MKDIR_P (albeit giving runtime warnings, and
+	calling AC_SUBST on 'mkdir_p' too).
+	* m4/init.m4 (AM_INIT_AUTOMAKE): No longer call AC_SUBST for
+	'mkdir_p', as that is once again AM_PROG_MKDIR_P's business.
 
 2013-01-16  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5044,6 +7530,17 @@
 
 2013-01-12  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  ywrap: remove an obsolete FIXME comment
+	  ywrap: style fixes (no semantic change intended)
+	  convenience: "make lint" as an alias for "make maintainer-check"
+	  docs: typofix in manual
+	  coverage: using multiple lexers in a single program
+
+2013-01-12  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	ywrap: remove an obsolete FIXME comment
 
 	If it were still relevant, somebody would have complained by now.
@@ -5079,6 +7576,20 @@
 
 	* t/lex-multiple.sh: New test.
 	* t/list-of-tests.mk: Add it.
+
+2013-01-12  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: remove most uses of the AM_PROG_CC_C_O obsolete macro
+	  coverage: obsolete macro AM_PROG_CC_C_O should cause no warning nor errors
+	  INSTALL: update copyright years
+	  ithreads: use runtime (not configure time) detection of perl threads
+	  copyright: add few missing copyright notices
+	  maint: files in PLANS are to be exempted from copyright notice
+	  maint: consistently honor the UPDATE_COPYRIGHT_YEAR environment variable
+	  copyright: update some copyright years
 
 2013-01-12  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5157,6 +7668,30 @@
 	last bump.
 
 	* bootstrap.sh, configure.ac, t/txinfo-builddir.sh: In these files.
+
+2013-01-11  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  compile: use 'compile' script when "-c -o" is used with losing compilers
+	  HACKING: suggest more checks before releasing
+	  tests: can fake a compiler not grasping "-c -o" -- globally in all tests
+	  sync: update files from upstream with "make fetch"
+	  typofix: in comments in GNUmakefile
+	  Rename 'maint/' -> 'maintainer/', for Git's sake
+	  HACKING: minor typofix
+	  HACKING: bug-tracker, the PLANS directory, and how to plan "big" changes
+	  HACKING: rewindable branches should live in the 'experimental/*' namespace
+	  HACKING: fixlets about git branch rewinding policy
+	  HACKING: commit messages are not to follow GCS ChangeLog rules too strongly
+	  HACKING: "detailed explanation" in commit messages is almost mandatory
+	  HACKING: we use "merge --log" even when merging master
+	  HACKING: typofix
+	  depend2.am: fix comments on verbosity of compilation rules
+	  depend2.am: improve comments a little
+	  plans: automake 1.14 is to assume "rm -f" with no args is OK
+	  plans: we want to active subdir-objects unconditionally in automake 1.14
 
 2013-01-11  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5392,6 +7927,24 @@
 	* PLANS/subdir-objects.txt: New.
 	* t/ccnoco4.sh: Improve heading comments a little.
 
+2013-01-09  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: adjust stale references to old test names
+	  tests: rename the last aclocal test with dumb name
+	  tests: fix an old botched change to an aclocal test
+	  tests: fix some botched inter-test references in heading comments
+	  coverage: compile rules used "-c -o" also with losing compilers
+	  texi: remove extra verbosity in creation of dirstamp directory
+	  coverage: user can avoid distributing '.info' pages
+	  plans: add some on-going plans (already registered on the bug tracker)
+	  docs: mention dist-hook help for EXTRA_DIST
+	  texi: remove workaround for older Texinfo (4.1)
+	  NEWS: improve wordings in entry deprecating suffix-less info files
+	  plans: add the "PLANS" directory
+
 2013-01-08  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	tests: adjust stale references to old test names
@@ -5459,6 +8012,55 @@
 	* t/ccnoco4.sh: New test.
 	* t/list-of-tests.mk (XFAIL_TESTS, handwritten_TESTS): List it.
 
+2013-01-07  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	texi: no longer support split info files
+
+	See automake bug#13351 and bug#12320.
+
+	Automake-generated recipes have for a long time supported "split"
+	info files:
+
+	  http://www.gnu.org/software/texinfo/manual/texinfo/texinfo.html#Tag-and-Split-Files
+
+	When I asked the rationale for this feature:
+
+	  http://lists.gnu.org/archive/html/texinfo-devel/2012-08/msg00015.html
+
+	Karl Berry confirmed that the reason for its existence was indeed
+	"efficiency, especially memory size":
+
+	  http://lists.gnu.org/archive/html/texinfo-devel/2012-08/msg00024.html
+
+	He also added that "The Elisp manual is one of the largest ones around.
+	Looks like it would be maybe 3.5mb as one file."  Not in any way big by
+	modern standards.
+
+	OTOH, it appears that the use of split info files (at least in the way
+	they have been handled by Automake-generated rules for a long time) can
+	cause real problems in some (admittedly quite corner-case) situations:
+
+	  http://thread.gmane.org/gmane.comp.parsers.bison.bugs/3963
+	  http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12320
+
+	So we now follow suit with Automake-NG (see commit v1.12.2-901-gdd603e2,
+	<http://lists.gnu.org/archive/html/automake-ng/2012-08/msg00147.html>)
+	and have Automake-generated makefiles pass the '--no-split' option
+	unconditionally to makeinfo invocations.
+
+	This allow some nice simplifications in our Texinfo recipes, and offer
+	an automatic fix for bug#12320.
+
+	Another *very* good aspect of such a change is that it should be 100%
+	transparent to the Automake users.
+
+	* lib/am/texinfos.am: Simplify moderately.
+	* lib/am/texibuild.am: Simplify greatly the recipe for the creation
+	of info files.
+	* t/txinfo-makeinfo-error-no-clobber.sh: Adjust.
+	* t/txinfo-no-split.sh: New test.
+	* t/list-of-tests.mk: Add it.
+
 2013-01-05  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	texi: remove extra verbosity in creation of dirstamp directory
@@ -5484,6 +8086,15 @@
 
 	* t/txinfo-nodist-info.sh: New test.
 	* t/list-of-tests.mk: Add it.
+
+2013-01-04  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	texi: remove leftover support for DGJPP '.iNN' info files
+
+	A follow-up to commit 'v1.13-6-gad08bbf'.
+
+	* lib/am/texinfos.am (dist-info): Stop catering to info files
+	with '.iNN' extension (as in '.i23' or '.i02').
 
 2013-01-04  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5527,6 +8138,23 @@
 2013-01-03  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
 	NEWS: improve wordings in entry deprecating suffix-less info files
+
+2013-01-03  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  build: don't enable 'color-tests' automake option explicitly
+	  build: enable all warnings as fatal in our own build system
+	  texi: Texinfo sources and CLEANFILES definition should co-exist peacefully
+	  tests: make two new test executable
+	  runtest: better command line API
+	  tests: move runtest.in away from the top-lever directory
+	  maint: move more maintainer files in the 'maint/' subdir
+	  tests: more significant names for some tests
+	  maint: add some of my maintainer-specific scripts
+	  texi: deprecate hack about info files in CLEANFILES variables
+	  texi: info files can be generated in the builddir
 
 2013-01-03  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5684,6 +8312,22 @@
 	* maint/am-xft: Likewise.
 	* maint/rename-tests: Likewise.
 	* Makefile.am (EXTRA_DIST): Add them.
+
+2013-01-02  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: reorganize tests on backslash issues
+	  style: add trailing ':' to some test cases
+	  tests: tweak tests on obsolete EXTRA_DATA variable
+	  tests: more significant names for some tests
+	  cosmetics: remove few occurrences of trailing whitespace
+	  docs: re-introduce mention of two-args AM_INIT_AUTOMAKE invocation
+	  texi: warn against '.txi' and '.texinfo' input suffixes
+	  cleanup: remove two lines of dead code in automake
+	  texi: warn against suffix-less info files
+	  build: respect silent rules in generation of "amhello" example tarball
 
 2013-01-02  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5892,6 +8536,15 @@
 
 2013-01-01  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: fixlets and updates
+	  post-release: minor version bump (1.13.1a)
+	  release: stable minor release 1.13.1
+
+2013-01-01  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	NEWS: fixlets and updates
 
 2013-01-01  Stefano Lattarini  <stefano.lattarini@gmail.com>
@@ -5906,6 +8559,17 @@
 
 	* configure.ac (AC_INIT): Bump version number to 1.13.1.
 	* m4/amversion.m4: Likewise (auto-updated by "make bootstrap").
+
+2013-01-01  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: don't always look for a C++ compiler named 'RCC'
+	  tests: fix bug in pkg-config-macros.sh, could cause spurious SKIPs
+	  docs: autom4te cache can break CONFIGURE_DEPENDENCIES
+	  coverage: test CONFIGURE_DEPENDENCIES
+	  coverage: test CONFIG_STATUS_DEPENDENCIES
 
 2013-01-01  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -5969,6 +8633,15 @@
 
 2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  tests: fix reference to related tests in some comments
+	  tests: some enhancements to texinfo tests (from Automake-NG)
+	  tests: fix reference to sister tests in two heading comments
+
+2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	tests: fix reference to related tests in some comments
 
 	* t/acloca10.sh: Here.
@@ -5996,7 +8669,28 @@
 
 2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	maint: update copyright year for 2013 (in branch master)
+
+	* t/includes-no-more.sh: Only here (all other files already touched in maint)
+
+2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  maint: update copyright year for 2013 (in branch maint)
+
+2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	maint: update copyright year for 2013 (in branch maint)
+
+2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  docs: adjust comment w.r.t. recent tests renaming
+	  tests: some more renames for texinfo tests
 
 2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -6025,6 +8719,18 @@
 	* t/vtexi4.sh: Rename ...
 	* t/txinfo-vtexi4.sh: ... like this, and adjust heading comments.
 	* t/list-of-tests.mk: Adjust.
+
+2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  tests: enhance and tweak some texinfo tests
+	  tests: remove a redundant texinfo test
+	  tests: don't list a removed tests in XFAIL_TESTS
+	  tests: more explicative names for some tests
+	  cleanup: drop a redundant %?FIRST% transform
+	  maint: state when compatibility cruft should be removed or warned about
 
 2012-12-31  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -6123,6 +8829,14 @@
 
 2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
+	Merge branch 'maint'
+
+	* maint:
+	  fixup: copyright yars in two recent tests
+	  obsolete: fixup: don't use AU_DEFUN where AC_DEFUN is required
+
+2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
 	fixup: copyright yars in two recent tests
 
 2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
@@ -6130,6 +8844,44 @@
 	obsolete: fixup: don't use AU_DEFUN where AC_DEFUN is required
 
 	* m4/obsolete-err.m4: Here, for the definition of 'AM_PROG_CC_STDC'
+
+2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	obsolete: better error message if AM_PROG_MKDIR_P is used
+
+	In Automake 1.14, the long-deprecated macro AM_PROG_MKDIR_P will be
+	removed.  Instead of simply dropping the macro definition, which would
+	cause unclear error messages in aclocal and autoconf:
+
+	    configure.ac:4: warning: macro 'AM_PROG_MKDIR_P' not found in library
+	    configure.ac:4: error: possibly undefined macro: AM_PROG_MKDIR_P
+	      If this token and others are legitimate, please use m4_pattern_allow.
+	      See the Autoconf documentation.
+
+	we re-add an AM_PROG_MKDIR_P definition that simply raises a *clear* error
+	message when the macro is used.
+
+	See also recent similar commits 'v1.13-5-g9c07d89' and 'v1.13-4-g8e921bf'
+
+	* t/am-prog-mkdir-p-no-more.sh: New test.
+	* t/list-of-tests.mk: Add it.
+	* m4/obsolete-err.m4: Add the new "error-raising" definition for
+	AM_PROG_MKDIR_P.
+
+2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	NEWS: document removal of AM_PROG_MKDIR_P macro
+
+2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	* maint:
+	  NEWS: minor fixup
+	  obsolete: better error message if AM_PROG_CC_STDC is used
+	  obsolete: better error message if AM_CONFIG_HEADER is used
+	  sync: update files from upstream with "make fetch"
+	  tests: better names for temporary configure.ac files
 
 2012-12-30  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -6234,6 +8986,304 @@
 	* t/cond42.sh: Likewise.  Also, while at it, rename ...
 	(edit_configure_in): ... this function ...
 	(edit_configure_ac): ... like this.
+
+2012-12-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	NEWS: better distinction between obsolete and obsolescent features
+
+2012-12-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	cleanup: get rid of 'Automake::Configure_ac' module
+
+	Now that we unconditionally assume the Autoconf input is named
+	"configure.ac", it's easier and clearer to inline the checks on
+	the existence of such a file directly in the automake and
+	aclocal scripts.
+
+	This change is basically a backport of the 'v1.12-327-gee6d72a'
+	commit from Automake-NG.
+
+	* lib/Automake/Variable.pm (Automake::Configure_ac): Drop this import.
+	($configure_ac): Define to "configure.ac", unconditionally.
+	* automake.in: Likewise.  Also, in main code, check the existence
+	of 'configure.ac' directly, instead of calling the now-removed
+	'require_configure_ac' function.
+	* aclocal.in: Likewise.
+
+2012-12-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: remove last vestiges of 'configure.in' support from the testsuite
+
+	* syntax-checks.mk: Don't whitelist any file in the maintainer
+	check looking against use of 'configure.in' in the testsuite.
+	* t/autodist-configure-no-subdir.sh: Remove last references to
+	'configure.in'.
+
+2012-12-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: remove a botched comment from a test case
+
+	* t/backcompat6.sh: Here.
+
+2012-12-29  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	maint: reflect removal of 'configure.in' support in comments and messages
+
+	* t/help.sh, syntax-checks.mk, aclocal.in, old/TODO: In these files.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Drop support for 'configure.in' as the Autoconf input file
+
+	The autoconf input should be named 'configure.ac' instead.  The use
+	of 'configure.in' has been deprecated in Autoconf since at least
+	the 2.13 -> 2.50 transition, and future Autoconf versions (starting
+	with 2.70 probably) will start to warn about it at runtime.  Automake
+	has been warning about it since the 1.13 release.
+
+	This change is basically a backport of commit 'v1.12-325-g927d4cb',
+	from Automake-NG.
+
+	* lib/Automake/Configure_ac.pm (find_configure_ac): Don't look for
+	'configure.in' if 'configure.ac' is not found.
+	(require_configure_ac): On failure, don't tell that "'configure.ac'
+	or 'configure.in' is required", but just that "'configure.ac' is
+	required".
+	* automake.in (@common_sometimes): Don't list 'configure.in'.
+	(scan_autoconf_files): Adjust heading comments.
+	* NEWS: Update.
+	* t/help.sh: Adjust.
+	* t/configure.sh: Remove as obsolete.
+	* t/list-of-tests.mk: Adjust.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Drop support for $(ACLOCAL_M4_SOURCES), it's obsolete
+
+	The $(ACLOCAL_M4_SOURCES) variables has been obsolete by a long time,
+	and basically unused (since at least commit ab57cf28 of 2003-04-24), so
+	drop any mention of it.
+
+	* automake.in (scan_aclocal_m4): Flatly reject any ACLOCAL_M4_SOURCES
+	definition with a fatal error, rather than just warning about it.
+	if any deinifn
+	$(ACLOCAL_M4_SOURCES).  Don't append it to @ac_deps.  This makes such
+	variable always empty, so there's no need to return it.  Adjust the
+	signature of this function accordingly, and ...
+	(handle_configure): ... update this function accordingly.
+	* NEWS: Update.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: remove stray uses of 'Exit', in favour of simple 'exit'
+
+	* t/warnopts.sh: Here.  Suggested by the 'sc_tests_exit_not_Exit'
+	maintainer check.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'remove-djgpp-support'
+
+	* remove-djgpp-support:
+	  general: assume dot-starting file names are supported
+	  Drop support for DJGPP, MS-DOS, Windows 95/98/ME
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	general: assume dot-starting file names are supported
+
+	Now that we've dropped support for DJGPP, Windows 95/98/ME
+	and MS-DOS, that should always the case.
+
+	This change is basically a backport of Automake-NG commit
+	'v1.12-342-ge6af355'.
+
+	* lib/am/texibuild.am: Just assume we can have directories whose
+	name starts with a dot, i.e., that '${am__leading_dot}' expands
+	to '.'.
+	* automake.in (require_build_directory): Likewise.
+	* m4/depend.m4 (AM_SET_DEPDIR): Likewise.  Now $(DEPDIR) will
+	be set unconditionally to '.deps'.
+	* m4/init.m4 (AM_INIT_AUTOMAKE): Don't AC_REQUIRE the m4 macro
+	'AM_SET_LEADING_DOT' anymore.
+	* m4/lead-dot.m4: Delete.
+	* Makefile.am (dist_automake_ac_DATA): Remove it.
+	* t/subobj11a.sh: Just assume $(DEPDIR) expands to '.deps'.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Drop support for DJGPP, MS-DOS, Windows 95/98/ME
+
+	Basically a backport and squash-in of three Automake-NG commits:
+	v1.12.1-447-g041fe15, v1.12-343-g4526363, v1.12-341-gc853c20,
+	plus proper simplifications of the ylwrap script.
+
+	See also:
+	<http://lists.gnu.org/archive/html/automake-ng/2012-05/msg00104.html>
+
+	* automake.in (BEGIN): Don't override $ENV{SHELL} for DJGPP.
+	(handle_libtool): Do not bother cleaning '_libs' directories, they
+	are only used by Libtool on MS-DOS (and we no longer support that
+	setup).
+	* syntax-checks.mk (automake_diff_no): Adjust, as now there are only
+	seven (not eight) different lines between 'automake.in' and 'automake'.
+	* bootstrap.sh: Don't special case the default value for BOOTSTRAP_SHELL
+	on DJGPP.  While we are at, allow that variable to be overridden from
+	the environment. Also, adjust comments: we don't use "ln -s" not because
+	it's not properly supported by DJGPP, but because it might not be
+	properly supported by MinGW/MSYS.
+	* configure.ac (MODIFICATION_DELAY): Define to '2' unconditionally, as
+	we no longer have to cater to quirks of Windows 95/98/ME.
+	* lib/am/texibuild.am: Remove support for '*.iNN' files used on DJGPP.
+	* lib/am/texinfos.am: Likewise.
+	* lib/ylwrap: Remove support for DOS-specific filenames for bison
+	output.
+	* t/txinfo19.sh: Remove as obsolete.
+	* t/list-of-tests.mk: Adjust.
+	* NEWS: Update.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	depcomp: remove support for SGI C/C++ compilers
+
+	These compilers are only meant to run on IRIX, and that system has seen
+	its last release in 2006, and is expected to lose support from SGI in
+	December 2013:
+	<http://www.sgi.com/services/support/irix_mips_support.html>
+
+	This change fixes automake bug#12967 and bug#12978.
+
+	* lib/depcomp (sgi): Remove this depmode.
+	* NEWS: Update.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	tests: a test about warnings in category 'obsolete' was failing spuriously
+
+	* t/warnings-obsolete-default.sh : After our removal of $(INCLUDES)
+	support, this test has been spuriously failing because it was assuming
+	that a definition of the INCLUDES make variable only caused a warning
+	rather than a fatal error.  Fix it to use a definition of the newly
+	obsolescent ACLOCAL_AMFLAGS make variable.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	ACLOCAL_AMFLAGS: fully deprecate, with warnings in the 'obsolete' category
+
+	Users are expected to use the AC_CONFIG_MACRO_DIR{,S} autoconf macros
+	instead.  And the use of the '--install' aclocal option in ACLOCAL_AMFLAGS
+	has proved to be a bad idea anyway -- see automake bug#9037.
+
+	* NEWS: Update.
+	* t/aclocal-amflags.sh: Enhance and adjust.
+	* t/acloca14b.sh: Adjust.
+	* t/acloca22b.sh: Likewise.
+	* t/ax/distcheck-hook-m4.am: Likewise.
+	* t/dist-missing-m4.sh: Likewise.
+	* t/remake-renamed-m4-macro.sh: Likewise.
+	* t/remake-renamed-m4-macro-and-file.sh: Likewise.
+	* t/remake-renamed-m4-file.sh: Likewise.
+	* t/remake-moved-m4-file.sh: Likewise.
+	* t/remake-gnulib-remove-header.sh: Likewise.
+	* t/remake-gnulib-add-acsubst.sh: Likewise.
+	* t/remake-deleted-m4-file.sh: Likewise.
+	* t/remake-deleted-m4-file.sh: Likewise.
+	* t/libtool-macros.sh: Likewise.
+	* t/gettext-macros.sh: Likewise.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	compile: remove support for $(INCLUDES)
+
+	It has already been deprecated in the manual and by warnings in the
+	'obsolete' category for ages (at least since 2003), in favour of
+	AM_CPPFLAGS.  Automake-NG has removed support for it already.  And
+	the warnings in the obsolete category are on by default since the
+	1.12.4 release.
+
+	So, by removing it in Automake 1.14, we will simplify the transition
+	path for people that want to switch to Automake-NG.
+
+	See also Automake-NG commit v1.12-267-g6b74968 of 2012-05-21,
+	"[ng] compile: don't support $(INCLUDES) anymore, it's obsolete".
+
+	* NEWS, doc/automake.texi: Update.
+	* automake.in (generate_makefile): Reject INCLUDES unconditionally.
+	In all languages: don't add $(INCLUDES) to the compiler command line.
+	* t/includes-deprecation.sh: New test.
+	* t/list-of-tests.mk: Add it.
+	* t/werror2.sh : Adjust to avoid spurious failures.
+	* t/pluseq5.sh: Likewise.
+	* t/warnopts.sh: Likewise.
+
+	Suggested-by: Paolo Bonzini <bonzini@gnu.org>
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'aclocal-lookup-order'
+
+	* aclocal-lookup-order:
+	  aclocal: allow third-party macros take precedence over automake ones
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	aclocal: allow third-party macros take precedence over automake ones
+
+	It makes sense to allow "local system-wide" m4 macros take precedence
+	over built-in macros (defined in the aclocal versioned m4 directory
+	"${prefix}/share/aclocal-${APIVERSION}"), the same way we allow
+	"environment-level" m4 macros (through the ACLOCAL_PATH environment
+	variable ) take precedence over system-wide third-party macros.
+
+	An example: after this change, a definition of AM_PROG_VALAC placed
+	in file (say) '/usr/local/share/aclocal/my-vala.m4' should take
+	precedence over the same-named automake-provided macro defined in
+	file '/usr/local/share/aclocal-1.14/vala.m4'.
+
+	Even more importantly, after this change, m4 macros accessible
+	through $ACLOCAL_PATH entries will take precedence over m4 macros
+	defined in the aclocal versioned m4 directory; it was quite counter
+	intuitive that it was not the case before.
+
+	* aclocal.in (scan_m4_files): Search files in @system_includes before
+	files in @automake_includes.
+	* t/aclocal-acdir.sh: Adjust.
+	* t/aclocal-path-precedence.sh: Likewise.
+	* t/dirlist.sh: Likewise.
+	* doc/automake.texi: Adjust.
+	* NEWS: Update.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'am-prog-mkdir-p-remove'
+
+	Finally backporting the AM_PROG_MKDIR_P removal that has already taken
+	place in Automake-NG.  We can safely do this since the latest Gettext
+	release (1.18.2) has removed all uses of AM_PROG_MKDIR_P, replacing
+	them with uses of AC_PROG_MKDIR_P instead.
+
+	References:
+	<http://lists.gnu.org/archive/html/bug-gettext/2012-12/msg00064.html>
+	<http://lists.gnu.org/archive/html/automake/2012-12/msg00024.html>
+	Commit v0.18.1.1-147-g2cccb4c in the Gettext git repository.
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	Merge branch 'maint'
+
+	Actually a dummy merge, since we retain our own "1.13a" version
+	number.
+
+	* maint:
+	  post-release: minor version bump
+
+2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	post-release: major version bump
+
+	This is for the master branch.
+
+	* configure.ac, m4/amversion.m4: Bump version to 1.13a.
 
 2012-12-28  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
@@ -8386,6 +11436,38 @@
 
 	* maint:
 	  tests: prepare to move ./defs to t/ax/test-init.sh
+
+2012-10-27  Stefano Lattarini  <stefano.lattarini@gmail.com>
+
+	AM_PROG_MKDIR_P: remove as obsolete, this time for good
+
+	This commit basically reverts v1.12.4-158-gdf23daf, re-instating
+	commit v1.12-20-g8a1c64f.
+
+	Support for the obsolescent 'AM_PROG_MKDIR_P' m4 macro has been
+	deprecated in the documentation and with runtime warnings since
+	Automake 1.12.1.  Still, when we released Automake 1.13, we had
+	to delay that macro's removal, since at the time the last released
+	version of GNU gettext still AC_REQUIRE's AM_PROG_MKDIR_P via its
+	'intl.m4' and 'po.m4' files, which are pulled into *many* projects.
+
+	But it's now time to remove AM_PROG_MKDIR_P once and for all.
+	Projects still needing to work with older gettext releases will
+	be able to do so by adding a definition like
+
+	   AC_DEFUN([AM_PROG_MKDIR_P], [AC_PROG_MKDIR_P([$@])])
+
+	to their 'acinclude.m4' file or to another local '*.m4' file.
+
+	* m4/mkdirp.m4: Delete.
+	* Makefile.am (dist_automake_ac_DATA): Remove it.
+	* automake.in (scan_autoconf_traces): Don't handle, nor warn about,
+	AM_PROG_MKDIR_P.
+	* doc/automake.texi (Obsolete Macros): Delete (it only spoke about
+	AM_PROG_MKDIR_P).
+	* t/gettext-macros.sh: Adjust.
+	* t/mkdirp-deprecation.sh: Delete.
+	* t/list-of-tests.mk: Don't list it.
 
 2012-10-27  Stefano Lattarini  <stefano.lattarini@gmail.com>
 
