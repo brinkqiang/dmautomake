@@ -10,6 +10,7 @@
 # sh configure
 # popd
 
+sh bootstrap
 sh configure
 make
 
