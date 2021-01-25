@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2020 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,19 +17,18 @@ package Automake::General;
 
 use 5.006;
 use strict;
+use warnings FATAL => 'all';
+
 use Exporter;
 use File::Basename;
 
-use vars qw (@ISA @EXPORT);
-
-@ISA = qw (Exporter);
-@EXPORT = qw (&uniq $me);
+our @ISA = qw (Exporter);
+our @EXPORT = qw (&uniq &none $me);
 
 # Variable we share with the main package.  Be sure to have a single
 # copy of them: using 'my' together with multiple inclusion of this
 # package would introduce several copies.
-use vars qw ($me);
-$me = basename ($0);
+our $me = basename ($0);
 
 # END
 # ---
@@ -66,5 +65,23 @@ sub uniq (@)
    return wantarray ? @res : "@res";
 }
 
+# $RES
+# none (&PRED, @LIST)
+# ------------
+# Return 1 when no element in LIST satisfies predicate PRED otherwise 0.
+sub none (&@)
+{
+  my ($pred, @list) = @_;
+  my $res = 1;
+  foreach my $item (@list)
+    {
+      if ($pred->($item))
+        {
+          $res = 0;
+          last;
+        }
+    }
+  return $res;
+}
 
 1; # for require

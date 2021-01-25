@@ -1,9 +1,9 @@
 ## ------------------------                                 -*- Autoconf -*-
 ## Python file handling
 ## From Andrew Dalke
-## Updated by James Henstridge
+## Updated by James Henstridge and other contributors.
 ## ------------------------
-# Copyright (C) 1999-2018 Free Software Foundation, Inc.
+# Copyright (C) 1999-2020 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -36,24 +36,12 @@ AC_DEFUN([AM_PATH_PYTHON],
  [
   dnl Find a Python interpreter.  Python versions prior to 2.0 are not
   dnl supported. (2.0 was released on October 16, 2000).
-  m4_define_default([am_py_min_ver], m4_ifval([$1], [$1], [2.0]))
-  dnl The arbitrary default maximum version.
-  m4_define_default([am_py_max_ver], [4.0])
-
   m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
-    [[python] \
-     dnl If we want some Python 2 versions (min version <= 2.7),
-     dnl also search for "python2".
-     m4_if(m4_version_compare(am_py_min_ver, [2.8]), [-1], [python2], []) \
-     [python3] \
-     dnl Construct a comma-separated list of interpreter names (python2.6,
-     dnl python2.7, etc). We only care about the first 3 characters of the
-     dnl version strings (major-dot-minor; not
-     dnl major-dot-minor-dot-bugfix[-dot-whatever])
-     m4_foreach([py_ver],
-       m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] m4_substr(am_py_max_ver, [0], [3]) -0.1 m4_substr(am_py_min_ver, [0], [3])),
-       dnl Remove python2.8 and python2.9 since they will never exist
-       [m4_bmatch(py_ver, [2.[89]], [], [python]py_ver)])])
+[python python2 python3 dnl
+ python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3 dnl
+ python3.2 python3.1 python3.0 dnl
+ python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 dnl
+ python2.0])
 
   AC_ARG_VAR([PYTHON], [the Python interpreter])
 
@@ -98,12 +86,14 @@ AC_DEFUN([AM_PATH_PYTHON],
     m4_default([$3], [AC_MSG_ERROR([no suitable Python interpreter found])])
   else
 
-  dnl Query Python for its version number.  Getting [:3] seems to be
-  dnl the best way to do this; it's what "site.py" does in the standard
-  dnl library.
+  dnl Query Python for its version number.  Although site.py simply uses
+  dnl sys.version[:3], printing that failed with Python 3.10, since the
+  dnl trailing zero was eliminated. So now we output just the major
+  dnl and minor version numbers, as numbers. Apparently the tertiary
+  dnl version is not of interest.
 
   AC_CACHE_CHECK([for $am_display_PYTHON version], [am_cv_python_version],
-    [am_cv_python_version=`$PYTHON -c "import sys; sys.stdout.write(sys.version[[:3]])"`])
+    [am_cv_python_version=`$PYTHON -c "import sys; print('%u.%u' % sys.version_info[[:2]])"`])
   AC_SUBST([PYTHON_VERSION], [$am_cv_python_version])
 
   dnl Use the values of $prefix and $exec_prefix for the corresponding
