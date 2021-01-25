@@ -1,5 +1,5 @@
 #! /usr/bin/env perl
-# Copyright (C) 2011-2018 Free Software Foundation, Inc.
+# Copyright (C) 2011-2020 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -555,7 +555,7 @@ main @ARGV;
 # cperl-extra-newline-before-brace: t
 # cperl-merge-trailing-else: nil
 # cperl-continued-statement-offset: 2
-# eval: (add-hook 'write-file-hooks 'time-stamp)
+# eval: (add-hook 'before-save-hook 'time-stamp)
 # time-stamp-start: "my $VERSION = "
 # time-stamp-format: "'%:y-%02m-%02d.%02H'"
 # time-stamp-time-zone: "UTC0"

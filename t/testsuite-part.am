@@ -60,6 +60,8 @@ t/exeext4-w.log: t/exeext4.sh
 t/exeext4-w.log: t/exeext4.log
 t/install-sh-option-C-w.log: t/install-sh-option-C.sh
 t/install-sh-option-C-w.log: t/install-sh-option-C.log
+t/install-sh-option-S-w.log: t/install-sh-option-S.sh
+t/install-sh-option-S-w.log: t/install-sh-option-S.log
 t/install-sh-unittests-w.log: t/install-sh-unittests.sh
 t/install-sh-unittests-w.log: t/install-sh-unittests.log
 t/maken3-w.log: t/maken3.sh
@@ -110,6 +112,7 @@ generated_TESTS += t/compile6-w.sh
 generated_TESTS += t/compile7-w.sh
 generated_TESTS += t/exeext4-w.sh
 generated_TESTS += t/install-sh-option-C-w.sh
+generated_TESTS += t/install-sh-option-S-w.sh
 generated_TESTS += t/install-sh-unittests-w.sh
 generated_TESTS += t/maken3-w.sh
 generated_TESTS += t/mdate5-w.sh
@@ -150,10 +153,12 @@ t/tap-summary-color.log: t/ax/tap-summary-aux.sh
 ## Added by deps-extracting key 'check_testsuite_summary'.
 check_testsuite_summary_TESTS = \
   t/testsuite-summary-color.sh \
-  t/testsuite-summary-count.sh
+  t/testsuite-summary-count.sh \
+  t/testsuite-summary-header.sh
 EXTRA_DIST += t/ax/testsuite-summary-checks.sh
 t/testsuite-summary-color.log: t/ax/testsuite-summary-checks.sh 
 t/testsuite-summary-count.log: t/ax/testsuite-summary-checks.sh 
+t/testsuite-summary-header.log: t/ax/testsuite-summary-checks.sh 
 
 ## Added by deps-extracting key 'depcomp'.
 depcomp_TESTS = \
@@ -193,9 +198,11 @@ t/depcomp-msvisualcpp.log: t/ax/depcomp.sh
 
 ## Added by deps-extracting key 'extract_testsuite_summary'.
 extract_testsuite_summary_TESTS = \
-  t/testsuite-summary-count-many.sh
+  t/testsuite-summary-count-many.sh \
+  t/testsuite-summary-header.sh
 EXTRA_DIST += t/ax/extract-testsuite-summary.pl
 t/testsuite-summary-count-many.log: t/ax/extract-testsuite-summary.pl 
+t/testsuite-summary-header.log: t/ax/extract-testsuite-summary.pl 
 
 ## Added by deps-extracting key 'gettext_macros'.
 gettext_macros_TESTS = \
@@ -269,6 +276,8 @@ libtool_macros_TESTS = \
   t/suffix8.tap \
   t/suffix10.tap \
   t/vala-libs.sh \
+  t/vala-libs-distcheck.sh \
+  t/vala-libs-vpath.sh \
   t/vartypo2.sh \
   t/depcomp-lt-auto.tap \
   t/depcomp-lt-cpp.tap \
@@ -333,6 +342,8 @@ t/suffix5.log:  t/libtool-macros.log
 t/suffix8.log:  t/libtool-macros.log
 t/suffix10.log:  t/libtool-macros.log
 t/vala-libs.log:  t/libtool-macros.log
+t/vala-libs-distcheck.log:  t/libtool-macros.log
+t/vala-libs-vpath.log:  t/libtool-macros.log
 t/vartypo2.log:  t/libtool-macros.log
 t/depcomp-lt-auto.log:  t/libtool-macros.log
 t/depcomp-lt-cpp.log:  t/libtool-macros.log
@@ -487,6 +498,8 @@ t/tap-xfail-tests.log: t/ax/tap-setup.sh t/tap-common-setup.log
 pkgconfig_macros_TESTS = \
   t/vala-headers.sh \
   t/vala-libs.sh \
+  t/vala-libs-distcheck.sh \
+  t/vala-libs-vpath.sh \
   t/vala-mix.sh \
   t/vala-mix2.sh \
   t/vala-non-recursive-setup.sh \
@@ -498,6 +511,8 @@ pkgconfig_macros_TESTS = \
 EXTRA_DIST += 
 t/vala-headers.log:  t/pkg-config-macros.log
 t/vala-libs.log:  t/pkg-config-macros.log
+t/vala-libs-distcheck.log:  t/pkg-config-macros.log
+t/vala-libs-vpath.log:  t/pkg-config-macros.log
 t/vala-mix.log:  t/pkg-config-macros.log
 t/vala-mix2.log:  t/pkg-config-macros.log
 t/vala-non-recursive-setup.log:  t/pkg-config-macros.log
